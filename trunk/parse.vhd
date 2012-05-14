@@ -28,7 +28,6 @@ architecture main of parse is
 	signal data_length : unsigned(7 downto 0) := x"00";
 	signal dataword	   : unsigned(31 downto 0) := x"00000000";
 	signal addressword : unsigned(31 downto 0) := x"00000000";
-	signal currC	   : unsigned(7 downto 0) := x"00";
 	signal currChar	   : unsigned(7 downto 0) := x"00";
 	signal addressBits : integer := 0;
 	signal dataBits   : integer := 0;
@@ -62,8 +61,28 @@ begin
 			for i in line_length - 1 downto 0 loop
 				read(line_buffer, char, is_string);
 				
-				currC <= to_unsigned(character'pos(char),8);
-	  			currChar <= to_unsigned(to_integer(currC) - 48, 8); -- subtacting by 48 to convert into number			
+				--currC <= to_unsigned(character'pos(char),8);
+	  			case char is
+					when '0' => currChar <= x"00";
+					when '1' => currChar <= x"01";
+					when '2' => currChar <= x"02";
+					when '3' => currChar <= x"03";
+					when '4' => currChar <= x"04";
+					when '5' => currChar <= x"05";
+					when '6' => currChar <= x"06";
+					when '7' => currChar <= x"07";
+					when '8' => currChar <= x"08";
+					when '9' => currChar <= x"09";
+					when 'A' => currChar <= x"0A";
+					when 'B' => currChar <= x"0B";
+					when 'C' => currChar <= x"0C";
+					when 'D' => currChar <= x"0D";
+					when 'E' => currChar <= x"0E";
+					when 'F' => currChar <= x"0F";
+					when others => currChar <= x"00";
+				end case;
+				
+				--currChar <= to_unsigned(to_integer(currC) - 48, 8); -- subtacting by 48 to convert into number			
 				
 				wait until rising_edge(i_clock);				
 				
