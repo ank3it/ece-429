@@ -65,11 +65,13 @@ begin
 				currChar <= to_unsigned(character'pos(char),8);
 	  			currChar <= to_unsigned(to_integer(currChar) - 48, 8);			
 				
+				wait until rising_edge(i_clock);				
+
 				-- End of line detected
 				if not is_string then
 					exit;
 				end if;
-
+				
 				-- Logic for parsing SREC file here
 				if iter = 1 then -- skipping first character 'S' 
 				
@@ -116,7 +118,7 @@ begin
 				    end if;
 
 				end if;
-				wait until rising_edge(i_clock);
+				--wait until rising_edge(i_clock);
 			end loop;
 		end loop;
 		wait for 10 ns;
