@@ -2,14 +2,14 @@ LIBRARY ieee;
 USE ieee.std_logic_1164.ALL;
 use std.textio.all;
 
-package fileio is
+package fileio_pkg is
 
 	-- Read single line from given file and return result as a string
 	procedure read_line(file infile : text; result_string : out string);
 
-end package fileio;
+end package fileio_pkg;
 
-package body fileio is
+package body fileio_pkg is
 
 	---------------------------- read_line() -----------------------------
 	-- infile : file pointer to the file where the line is being read from
@@ -38,5 +38,4 @@ package body fileio is
 			end if;
 		end loop;
 	end procedure read_line;
-
-end package body fileio;
+end package body fileio_pkg;
