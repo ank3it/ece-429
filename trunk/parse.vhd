@@ -103,10 +103,6 @@ begin
 				    end if;		
 	
 				elsif iter < (5 + addressBits + data_length) then -- getting data
-				    if dataBits = 0 then
-				    	dataword <= x"00000000";
-				    end if;
-
 				    dataBits <= dataBits + 1;
 		
 				    dataword <= to_unsigned(to_integer(dataword) * 16, 32);
@@ -115,9 +111,12 @@ begin
 				    if dataBits = 4 then
 					dataBits <= 0;
 					-- new 32-BIT DATA IS READY IN SIGNAL "dataword"
+					-- ""reset dataword here!!""
+					--   =====================
 				    end if;
 
 				end if;
+				wait until rising_edge(i_clock);
 			end loop;
 		end loop;
 		wait for 10 ns;
