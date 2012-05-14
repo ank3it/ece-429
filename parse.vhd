@@ -120,6 +120,7 @@ begin
 				end if;
 				--wait until rising_edge(i_clock);
 			end loop;
+			iter <= 0;
 		end loop;
 		wait for 10 ns;
 	end process;
