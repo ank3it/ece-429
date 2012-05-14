@@ -89,16 +89,16 @@ begin
 					end case;  			
 		
 				elsif iter < 5 then -- getting data length
-				    data_length <= to_unsigned(to_integer(data_length) * 16, 8);
-	                	    data_length <= to_unsigned(to_integer(data_length) + to_integer(currChar), 8); -- length of data
+				    data_length <= to_unsigned((to_integer(data_length) * 16) + to_integer(currChar), 8);
+	                	    --data_length <= to_unsigned(to_integer(data_length) + to_integer(currChar), 8); -- length of data
 														       -- -6 = -4(address) - 2(checksum)	
 				    if iter = 4 then
 					data_length <= to_unsigned(to_integer(data_length) - 2 - addressBits, 8); -- datalength = addressBits - checksumBits
 				    end if;
 	
 				elsif iter < (5 + addressBits) then -- getting address 
-				    addressword <= to_unsigned(to_integer(addressword) * 16, 32);
-				    addressword <= to_unsigned(to_integer(addressword) + to_integer(currChar), 32);	     	
+				    addressword <= to_unsigned((to_integer(addressword) * 16) + to_integer(currChar), 32);
+				    --addressword <= to_unsigned(to_integer(addressword) + to_integer(currChar), 32);	     	
 				    
 			            if iter = (4 + addressBits) then
 					-- 32-BIT ADDRESS DATA IS READY IN SIGNAL "addressword"
@@ -107,8 +107,8 @@ begin
 				elsif iter < (5 + addressBits + data_length) then -- getting data
 				    dataBits <= dataBits + 1;
 		
-				    dataword <= to_unsigned(to_integer(dataword) * 16, 32);
-                                    dataword <= to_unsigned(to_integer(dataword) + to_integer(currChar), 32);
+				    dataword <= to_unsigned((to_integer(dataword) * 16) + to_integer(currChar), 32);
+                                    --dataword <= to_unsigned(to_integer(dataword) + to_integer(currChar), 32);
 	
 				    if dataBits = 4 then
 					dataBits <= 0;
