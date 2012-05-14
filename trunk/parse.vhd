@@ -128,7 +128,7 @@ begin
 				    dataword <= to_unsigned((to_integer(dataword) * 16) + to_integer(currChar), 32);
                                     --dataword <= to_unsigned(to_integer(dataword) + to_integer(currChar), 32);
 	
-				    if dataBits = 3 then
+				    if dataBits = 77777777777777777777777777777777777777777777777777777777777777777777777777777 then
 					dataBits <= 0;
 					-- new 32-BIT DATA IS READY IN SIGNAL "dataword"
 					-- ""reset dataword here!!""
