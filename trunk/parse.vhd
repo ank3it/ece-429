@@ -28,6 +28,7 @@ architecture main of parse is
 	signal data_length : unsigned(7 downto 0) := x"00";
 	signal dataword	   : unsigned(31 downto 0) := x"00000000";
 	signal addressword : unsigned(31 downto 0) := x"00000000";
+	signal currC	   : unsigned(7 downto 0) := x"00";
 	signal currChar	   : unsigned(7 downto 0) := x"00";
 	signal addressBits : integer := 0;
 	signal dataBits   : integer := 0;
@@ -61,12 +62,12 @@ begin
 			for i in line_length - 1 downto 0 loop
 				read(line_buffer, char, is_string);
 				
-				iter <= iter + 1;
-				currChar <= to_unsigned(character'pos(char),8);
-	  			currChar <= to_unsigned(to_integer(currChar) - 48, 8);			
+				currC <= to_unsigned(character'pos(char),8);
+	  			currChar <= to_unsigned(to_integer(currC) - 48, 8); -- subtacting by 48 to convert into number			
 				
 				wait until rising_edge(i_clock);				
-
+				
+				iter <= iter + 1;
 				-- End of line detected
 				if not is_string then
 					exit;
@@ -89,11 +90,11 @@ begin
 					end case;  			
 		
 				elsif iter < 5 then -- getting data length
-				    data_length <= to_unsigned((to_integer(data_length) * 16) + to_integer(currChar), 8);
-	                	    --data_length <= to_unsigned(to_integer(data_length) + to_integer(currChar), 8); -- length of data
-														       -- -6 = -4(address) - 2(checksum)	
 				    if iter = 4 then
-					data_length <= to_unsigned(to_integer(data_length) - 2 - addressBits, 8); -- datalength = addressBits - checksumBits
+					data_length <= to_unsigned((to_integer(data_length)*16) + to_integer(currChar) - 2 - addressBits, 8); 
+					-- datalength = addressBits - checksumBits
+				    else
+					data_length <= to_unsigned((to_integer(data_length)*16) + to_integer(currChar), 8);	
 				    end if;
 	
 				elsif iter < (5 + addressBits) then -- getting address 
@@ -104,23 +105,22 @@ begin
 					-- 32-BIT ADDRESS DATA IS READY IN SIGNAL "addressword"
 				    end if;		
 	
-				elsif iter < (5 + addressBits + data_length) then -- getting data
-				    dataBits <= dataBits + 1;
-		
+				elsif iter < (5 + addressBits + data_length) then -- getting data 
 				    dataword <= to_unsigned((to_integer(dataword) * 16) + to_integer(currChar), 32);
                                     --dataword <= to_unsigned(to_integer(dataword) + to_integer(currChar), 32);
 	
-				    if dataBits = 4 then
+				    if dataBits = 3 then
 					dataBits <= 0;
 					-- new 32-BIT DATA IS READY IN SIGNAL "dataword"
 					-- ""reset dataword here!!""
 					--   =====================
+				    else
+					dataBits <= dataBits + 1;
 				    end if;
 
 				end if;
 				--wait until rising_edge(i_clock);
 			end loop;
-			iter <= 0;
 		end loop;
 		wait for 10 ns;
 	end process;
