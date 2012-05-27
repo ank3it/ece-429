@@ -42,17 +42,21 @@ architecture main of fetch is
               end if;
                 wait until rising_edge(clk);
                 while (counter /= 0) loop
+                  pc_fetch <= addr_fetch;
                   if stall = '0' then
                     addr_fetch <= std_logic_vector(unsigned(addr_fetch) + 4);
                   end if;
                   wait until rising_edge(clk);
                   counter := counter - 1;
               end loop;
+              wait;
         end if;
       end process;
+          
+        
       address <= addr_fetch;
       insnDecode <= insn;
-      pc_fetch <= std_logic_vector(unsigned(addr_fetch)-4);
+      --pc_fetch <= std_logic_vector(unsigned(addr_fetch)-4);
       pc <= pc_fetch;
       rw <= '0';  -- '0' means read
 end main;

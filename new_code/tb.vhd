@@ -77,35 +77,10 @@ architecture main of tb is
 		    );
      
     ----------------------------------------------------
-     
-      fetch2:process
-        variable my_line : line;  -- type 'line' comes from textio
-        variable counter : integer := 50;
-      begin
-        stall <= '0';
-        wait until rising_edge(clock2);
-        if reset = '0' then
-          wait until rising_edge(clock2);
-          wait until rising_edge(clock2);
-                while (counter /= 0) loop                 
-                  counter := counter - 1;
-                  hwrite( my_line , pc);
-                  write( my_line, string'(" :::: "));
-                  hwrite( my_line, data_FromFetch);
-                  writeline(output, my_line);
-                  if ( counter < 40 ) then
-                    stall <= '1';
-                  end if;
-                  if ( counter < 20 ) then
-                    stall <= '0';
-                  end if;
-                wait until rising_edge(clock2);
-              end loop;
-        end if;
-      end process;
 
     process
     begin
+     stall <= '0';
      clock2 <= '0';
      wait for period/2;
      clock2 <= '1';

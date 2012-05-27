@@ -9,6 +9,9 @@
 
 library IEEE;
 use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+use std.textio.all;
+use IEEE.std_logic_textio.all;          -- I/O for logic types
 
 entity decode is
 	port (
@@ -35,7 +38,6 @@ architecture main of decode is
 	signal address			: std_logic_vector(25 downto 0);
 	
 begin
-
 	-- Break up instruction into parts
 	opcode <= insn(31 downto 26);	-- For all instruction types
 	rs <= insn(25 downto 21);		-- R and I type
@@ -47,7 +49,13 @@ begin
 	address <= insn(25 downto 0);	-- J type
 	
 	-- Select correct instruction parts
-	process(opcode) begin
+	process(pc) 
+	    variable my_line : line;  -- type 'line' comes from textio
+	begin
+	           	    hwrite( my_line , pc);
+                  write( my_line, string'(" :: "));
+                  hwrite( my_line, insn);
+                  writeline(output, my_line);
 		if opcode = "000000" then
 			if funct = "000000" then		-- sll
 			elsif funct = "000010" then		-- srl
