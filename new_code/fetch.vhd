@@ -37,16 +37,16 @@ architecture main of fetch is
         wait until rising_edge(clk);
         if reset = '0' then
               addressword := x"80020000";
-              addr_fetch <= std_logic_vector(addressword);
+              if stall = '0' then
+                addr_fetch <= std_logic_vector(addressword);
+              end if;
                 wait until rising_edge(clk);
                 while (counter /= 0) loop
-                  addr_fetch <= std_logic_vector(unsigned(addr_fetch) + 4);
+                  if stall = '0' then
+                    addr_fetch <= std_logic_vector(unsigned(addr_fetch) + 4);
+                  end if;
                   wait until rising_edge(clk);
                   counter := counter - 1;
-                  --hwrite( my_line , pc_fetch);
-                  --write( my_line, string'(" : "));
-                  --hwrite( my_line, insn);
-                  --writeline(output, my_line);
               end loop;
         end if;
       end process;
