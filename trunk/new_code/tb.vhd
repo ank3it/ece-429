@@ -26,6 +26,11 @@ architecture main of tb is
         signal address2  	: std_logic_vector(31 downto 0);
         signal pc : std_logic_vector(31 downto 0);
         signal stall : std_logic;
+       	signal opType		: std_logic_vector(11 downto 0);
+		    signal source		: std_logic_vector(31 downto 0);
+		    signal destination	: std_logic_vector(31 downto 0);
+		    signal insnOut		: std_logic_vector(31 downto 0);
+		    signal pcOut		: std_logic_vector(31 downto 0);
    begin
 
      load : entity work.load(main)
@@ -57,12 +62,27 @@ architecture main of tb is
 			writeEnable => writeReady,
 			dataOut => dataOut
         );  
+     
+     decode : entity work.decode(main)
+      port map (
+        clk => clock2,
+        insn => data_FromFetch,
+        pc => pc,
+        stall => stall,
+       	opType		=> opType,
+		    source		=> source,
+		    destination	=> destination,
+		    insnOut		=> insnOut,
+		    pcOut		=> pcOut
+		    );
+     
     ----------------------------------------------------
      
       fetch2:process
         variable my_line : line;  -- type 'line' comes from textio
         variable counter : integer := 50;
       begin
+        stall <= '0';
         wait until rising_edge(clock2);
         if reset = '0' then
           wait until rising_edge(clock2);
@@ -73,6 +93,12 @@ architecture main of tb is
                   write( my_line, string'(" :::: "));
                   hwrite( my_line, data_FromFetch);
                   writeline(output, my_line);
+                  if ( counter < 40 ) then
+                    stall <= '1';
+                  end if;
+                  if ( counter < 20 ) then
+                    stall <= '0';
+                  end if;
                 wait until rising_edge(clock2);
               end loop;
         end if;
