@@ -1,11 +1,5 @@
 -- decode.vhd
 -- Group: 13
--- TODO:
--- [ ] Implement proper input/output signals
--- [x] Add logic to break up instruction
--- [x] Add logic to select instruction parts
--- [ ] Generate output signals
--- [ ] Add logic to deal with NOP
 
 library IEEE;
 use ieee.std_logic_1164.all;
@@ -347,7 +341,7 @@ begin
 				write( my_line, string'(", "));	
 				write( my_line, rs_line ); 
 				write( my_line, string'(", "));	
-				hwrite( my_line, immediate ); 
+				write( my_line, to_integer(signed(immediate)) ); 
 				--writeline(output, my_line);				
 		elsif opcode = "001001" then		-- addiu
 				write( my_line, string'("ADDIU ") );
@@ -355,7 +349,7 @@ begin
 				write( my_line, string'(", "));	
 				write( my_line, rs_line ); 
 				write( my_line, string'(", "));	
-				hwrite( my_line, immediate ); 
+				write( my_line, to_integer(signed(immediate)) ); 
 				--writeline(output, my_line);				
 		elsif opcode = "001010" then		-- slti
 				write( my_line, string'("SLTI ") );
@@ -363,13 +357,26 @@ begin
 				write( my_line, string'(", "));	
 				write( my_line, rs_line ); 
 				write( my_line, string'(", "));	
-				hwrite( my_line, immediate ); 
+				write( my_line, to_integer(signed(immediate)) ); 
+				--writeline(output, my_line);
+		elsif opcode = "001101" then		-- ori
+				write( my_line, string'("ORI ") );
+				write( my_line, rt_line ); 
+				write( my_line, string'(", "));	
+				write( my_line, rs_line ); 
+				write( my_line, string'(", "));	
+				write( my_line, to_integer(unsigned(immediate)) ); 
+		elsif opcode = "100011" then		-- lui
+				write( my_line, string'("LW ") );
+				write( my_line, rt_line ); 
+				write( my_line, string'(", "));
+				write( my_line, to_integer(unsigned(immediate)) ); 	
 				--writeline(output, my_line);				
 		elsif opcode = "100011" then		-- lw
 				write( my_line, string'("LW ") );
 				write( my_line, rt_line ); 
 				write( my_line, string'(", "));
-				hwrite( my_line, immediate );
+				write( my_line, to_integer(signed(immediate)) );
 				write( my_line, string'("("));
 				write( my_line, rs_line );
 				write(my_line, string'(")")); 	
@@ -378,7 +385,7 @@ begin
 				write( my_line, string'("SW ") );
 				write( my_line, rt_line ); 
 				write( my_line, string'(", "));
-				hwrite( my_line, immediate );
+				write( my_line, to_integer(signed(immediate)) );
 				write( my_line, string'("("));
 				write( my_line, rs_line );
 				write(my_line, string'(")")); 	
