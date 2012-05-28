@@ -31,34 +31,36 @@ entity decode is
 end entity;
 
 architecture main of decode is
-
-	signal opcode, funct	: std_logic_vector(5 downto 0);
-	signal rs, rt, rd, shamt: std_logic_vector(4 downto 0);
-	signal immediate		: std_logic_vector(15 downto 0);
-	signal target			: std_logic_vector(25 downto 0);
-	
 begin
 	-- Break up instruction into parts
-	opcode <= insn(31 downto 26);	-- For all instruction types
-	rs <= insn(25 downto 21);		-- R and I type
-	rt <= insn(20 downto 16);		-- R and I type
-	rd <= insn(15 downto 11);		-- R type
-	shamt <= insn(10 downto 6);		-- R type
-	funct <= insn(5 downto 0);		-- R type
-	immediate <= insn(15 downto 0);	-- I type or OFFSET
-	target <= insn(25 downto 0);	-- J type
 	
 	-- Select correct instruction parts
 	process(pc) 
 	    variable my_line : line;  -- type 'line' comes from textio
-            variable rd_line : string(1 to 5);
+      variable rd_line : string(1 to 5);
 	    variable rs_line : string(1 to 5);
 	    variable rt_line : string(1 to 5);		
+	    
+	    variable opcode, funct	: std_logic_vector(5 downto 0);
+	    variable rs, rt, rd, shamt: std_logic_vector(4 downto 0);
+	    variable immediate		: std_logic_vector(15 downto 0);
+	    variable target			: std_logic_vector(25 downto 0);
+	    
 	begin
-	          hwrite( my_line , pc);
-                  write( my_line, string'(" :: "));
+	                hwrite( my_line , pc);
+                  write( my_line, string'(" : "));
                   hwrite( my_line, insn);
-                  writeline(output, my_line);
+                  write( my_line, string'("    "));
+                 -- writeline(output, my_line);
+                 
+   	 opcode := insn(31 downto 26);	-- For all instruction types
+	   rs := insn(25 downto 21);		-- R and I type
+	   rt := insn(20 downto 16);		-- R and I type
+	   rd := insn(15 downto 11);		-- R type
+	   shamt := insn(10 downto 6);		-- R type
+	   funct := insn(5 downto 0);		-- R type
+	   immediate := insn(15 downto 0);	-- I type or OFFSET
+	   target := insn(25 downto 0);	-- J type            
 		
 		-- REGISTERS MAPPING		
 		-- 0  	  --> $zero
@@ -84,7 +86,7 @@ begin
 		-- NOP (manual pg 216) -- SLL r0
 	
 		case rd is
-			when "00000"  => rd_line := string'("$zero");--write( rd_line, string'("$zero") );
+			when "00000"  => rd_line := string'("$zero");
 			when "00010"  => rd_line := string'("  $v0"); 
 			when "00011"  => rd_line := string'("  $v1");
 			when "00100"  => rd_line := string'("  $a0");
@@ -182,9 +184,11 @@ begin
 			when others =>
 		end case;
 
+    write( my_line, string'("    "));
 		if opcode = "000000" then
 			if funct = "000000" then		-- sll
 				if rd = "00000" and rt = "00000" and shamt = "00000" then -- nop
+          write( my_line, string'("    "));
 					write( my_line, string'("NOP ") );
 				else
 					write( my_line, string'("SLL ") );
@@ -194,7 +198,7 @@ begin
 					write( my_line, string'(", "));
 					hwrite( my_line, shamt ); 
 				end if;			
-				writeline(output, my_line);	
+				--writeline(output, my_line);
 			elsif funct = "000010" then		-- srl
 				write( my_line, string'("SRL ") );
 				write( my_line, rd_line ); 
@@ -202,7 +206,7 @@ begin
 				write( my_line, rt_line );
 				write( my_line, string'(", "));
 				hwrite( my_line, shamt ); 
-				writeline(output, my_line);				
+				--writeline(output, my_line);				
 			elsif funct = "000011" then		-- sra
 				write( my_line, string'("SRA ") );
 				write( my_line, rd_line ); 
@@ -218,7 +222,7 @@ begin
 				write( my_line, rs_line );
 				write( my_line, string'(", "));
 				write( my_line, rt_line ); 
-				writeline(output, my_line);				
+				--writeline(output, my_line);				
 			elsif funct = "100001" then		-- addu
 				write( my_line, string'("ADDU ") );
 				write( my_line, rd_line ); 
@@ -226,7 +230,7 @@ begin
 				write( my_line, rs_line );
 				write( my_line, string'(", "));
 				write( my_line, rt_line ); 
-				writeline(output, my_line);				
+				--writeline(output, my_line);				
 			elsif funct = "100010" then		-- sub
 				write( my_line, string'("SUB ") );
 				write( my_line, rd_line ); 
@@ -234,7 +238,7 @@ begin
 				write( my_line, rs_line );
 				write( my_line, string'(", "));
 				write( my_line, rt_line ); 
-				writeline(output, my_line);				
+				--writeline(output, my_line);				
 			elsif funct = "100011" then		-- subu
 				write( my_line, string'("SUBU ") );
 				write( my_line, rd_line ); 
@@ -242,7 +246,7 @@ begin
 				write( my_line, rt_line );
 				write( my_line, string'(", "));
 				write( my_line, shamt ); 
-				writeline(output, my_line);				
+				--writeline(output, my_line);				
 			elsif funct = "100100" then		-- and
 				write( my_line, string'("AND ") );
 				write( my_line, rd_line ); 
@@ -258,7 +262,7 @@ begin
 				write( my_line, rs_line );
 				write( my_line, string'(", "));
 				write( my_line, rt_line ); 
-				writeline(output, my_line);				
+				--writeline(output, my_line);				
 			elsif funct = "100110" then		-- xor
 				write( my_line, string'("XOR ") );
 				write( my_line, rd_line ); 
@@ -266,7 +270,7 @@ begin
 				write( my_line, rs_line );
 				write( my_line, string'(", "));
 				write( my_line, rt_line ); 
-				writeline(output, my_line);				
+				--writeline(output, my_line);				
 			elsif funct = "100111" then		-- nor
 				write( my_line, string'("NOR ") );
 				write( my_line, rd_line ); 
@@ -274,7 +278,7 @@ begin
 				write( my_line, rs_line );
 				write( my_line, string'(", "));
 				write( my_line, rt_line ); 
-				writeline(output, my_line);				
+				--writeline(output, my_line);				
 			elsif funct = "101010" then		-- slt
 				write( my_line, string'("SLT ") );
 				write( my_line, rd_line ); 
@@ -282,7 +286,7 @@ begin
 				write( my_line, rs_line );
 				write( my_line, string'(", "));
 				write( my_line, rt_line ); 
-				writeline(output, my_line);				
+				--writeline(output, my_line);				
 			elsif funct = "101011" then		-- sltu
 				write( my_line, string'("SLTU ") );
 				write( my_line, rd_line ); 
@@ -290,7 +294,7 @@ begin
 				write( my_line, rs_line );
 				write( my_line, string'(", "));
 				write( my_line, rt_line ); 
-				writeline(output, my_line);				
+				--writeline(output, my_line);				
 			end if;
 		elsif opcode = "000001" then
 			if rt = "00000" then			-- bltz
@@ -298,18 +302,18 @@ begin
 				write( my_line, rs_line ); 
 				write( my_line, string'(", "));	
 				hwrite( my_line, immediate ); 
-				writeline(output, my_line);				
+				--writeline(output, my_line);				
 			elsif rt = "00001" then			-- bgez
 				write( my_line, string'("BGEZ ") );
 				write( my_line, rs_line ); 
 				write( my_line, string'(", "));	
 				hwrite( my_line, immediate ); 
-				writeline(output, my_line);				
+				--writeline(output, my_line);				
 			end if;
 		elsif opcode = "000010" then		-- j
 				write( my_line, string'("J ") );
 				hwrite( my_line, target ); 
-				writeline(output, my_line);				
+				--writeline(output, my_line);				
 		elsif opcode = "000100" then		-- beq
 				write( my_line, string'("BEQ ") );
 				write( my_line, rs_line ); 
@@ -317,7 +321,7 @@ begin
 				write( my_line, rt_line ); 
 				write( my_line, string'(", "));	
 				hwrite( my_line, immediate ); 
-				writeline(output, my_line);				
+				--writeline(output, my_line);				
 		elsif opcode = "000101" then		-- bne
 				write( my_line, string'("BNE ") );
 				write( my_line, rs_line ); 
@@ -325,19 +329,19 @@ begin
 				write( my_line, rt_line ); 
 				write( my_line, string'(", "));	
 				hwrite( my_line, immediate ); 
-				writeline(output, my_line);				
+				--writeline(output, my_line);				
 		elsif opcode = "000110" then		-- blez
 				write( my_line, string'("BLEZ ") );
 				write( my_line, rs_line ); 
 				write( my_line, string'(", "));	
 				hwrite( my_line, immediate ); 
-				writeline(output, my_line);				
+				--writeline(output, my_line);				
 		elsif opcode = "000111" then		-- bgtz
 				write( my_line, string'("BGTZ ") );
 				write( my_line, rs_line ); 
 				write( my_line, string'(", "));	
 				hwrite( my_line, immediate ); 
-				writeline(output, my_line);				
+				--writeline(output, my_line);				
 		elsif opcode = "001000" then		-- addi
 				write( my_line, string'("ADDI ") );
 				write( my_line, rt_line ); 
@@ -345,7 +349,7 @@ begin
 				write( my_line, rs_line ); 
 				write( my_line, string'(", "));	
 				hwrite( my_line, immediate ); 
-				writeline(output, my_line);				
+				--writeline(output, my_line);				
 		elsif opcode = "001001" then		-- addiu
 				write( my_line, string'("ADDIU ") );
 				write( my_line, rt_line ); 
@@ -353,7 +357,7 @@ begin
 				write( my_line, rs_line ); 
 				write( my_line, string'(", "));	
 				hwrite( my_line, immediate ); 
-				writeline(output, my_line);				
+				--writeline(output, my_line);				
 		elsif opcode = "001010" then		-- slti
 				write( my_line, string'("SLTI ") );
 				write( my_line, rt_line ); 
@@ -361,7 +365,7 @@ begin
 				write( my_line, rs_line ); 
 				write( my_line, string'(", "));	
 				hwrite( my_line, immediate ); 
-				writeline(output, my_line);				
+				--writeline(output, my_line);				
 		elsif opcode = "100011" then		-- lw
 				write( my_line, string'("LW ") );
 				write( my_line, rt_line ); 
@@ -370,7 +374,7 @@ begin
 				write( my_line, string'("("));
 				write( my_line, rs_line );
 				write(my_line, string'(")")); 	
-				writeline(output, my_line);				
+				--writeline(output, my_line);				
 		elsif opcode = "101011" then		-- sw
 				write( my_line, string'("SW ") );
 				write( my_line, rt_line ); 
@@ -379,8 +383,9 @@ begin
 				write( my_line, string'("("));
 				write( my_line, rs_line );
 				write(my_line, string'(")")); 	
-				writeline(output, my_line);				
+				--writeline(output, my_line);				
 		end if;
+		writeline(output, my_line);	
 	end process;
 	
 end architecture;
