@@ -188,7 +188,6 @@ begin
 		if opcode = "000000" then
 			if funct = "000000" then		-- sll
 				if rd = "00000" and rt = "00000" and shamt = "00000" then -- nop
-          write( my_line, string'("    "));
 					write( my_line, string'("NOP ") );
 				else
 					write( my_line, string'("SLL ") );
