@@ -39,6 +39,7 @@ begin
 	    variable rs, rt, rd, shamt: std_logic_vector(4 downto 0);
 	    variable immediate		: std_logic_vector(15 downto 0);
 	    variable target			: std_logic_vector(25 downto 0);
+	    variable jumpTarget : std_logic_vector(31 downto 0);
 	    
 	begin
 	                hwrite( my_line , pc);
@@ -305,7 +306,10 @@ begin
 			end if;
 		elsif opcode = "000010" then		-- j
 				write( my_line, string'("J ") );
-				hwrite( my_line, target ); 
+				jumpTarget := std_logic_vector((unsigned(pc) + 4));
+				jumpTarget(1 downto 0) := "00"; 
+				jumpTarget(27 downto 2) := target;
+				hwrite( my_line, jumpTarget ); 
 				--writeline(output, my_line);				
 		elsif opcode = "000100" then		-- beq
 				write( my_line, string'("BEQ ") );
