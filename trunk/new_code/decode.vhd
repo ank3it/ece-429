@@ -366,8 +366,8 @@ begin
 				write( my_line, rs_line ); 
 				write( my_line, string'(", "));	
 				write( my_line, to_integer(unsigned(immediate)) ); 
-		elsif opcode = "100011" then		-- lui
-				write( my_line, string'("LW ") );
+		elsif opcode = "001111" then		-- lui
+				write( my_line, string'("LUI ") );
 				write( my_line, rt_line ); 
 				write( my_line, string'(", "));
 				write( my_line, to_integer(unsigned(immediate)) ); 	
