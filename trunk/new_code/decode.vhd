@@ -237,9 +237,9 @@ begin
 				write( my_line, string'("SUBU ") );
 				write( my_line, rd_line ); 
 				write( my_line, string'(", "));	
-				write( my_line, rt_line );
+				write( my_line, rs_line );
 				write( my_line, string'(", "));
-				write( my_line, shamt ); 
+				write( my_line, rt_line ); 
 				--writeline(output, my_line);				
 			elsif funct = "100100" then		-- and
 				write( my_line, string'("AND ") );
