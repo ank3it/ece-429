@@ -184,13 +184,17 @@ begin
 
 		if opcode = "000000" then
 			if funct = "000000" then		-- sll
-				write( my_line, string'("SLL ") );
-				write( my_line, rd_line ); 
-				write( my_line, string'(", "));	
-				write( my_line, rt_line );
-				write( my_line, string'(", "));
-				hwrite( my_line, shamt ); 
-				writeline(output, my_line);				
+				if rd = "00000" and rt = "00000" and shamt = "00000" then -- nop
+					write( my_line, string'("NOP ") );
+				else
+					write( my_line, string'("SLL ") );
+					write( my_line, rd_line ); 
+					write( my_line, string'(", "));	
+					write( my_line, rt_line );
+					write( my_line, string'(", "));
+					hwrite( my_line, shamt ); 
+				end if;			
+				writeline(output, my_line);	
 			elsif funct = "000010" then		-- srl
 				write( my_line, string'("SRL ") );
 				write( my_line, rd_line ); 
@@ -315,13 +319,67 @@ begin
 				hwrite( my_line, immediate ); 
 				writeline(output, my_line);				
 		elsif opcode = "000101" then		-- bne
+				write( my_line, string'("BNE ") );
+				write( my_line, rs_line ); 
+				write( my_line, string'(", "));	
+				write( my_line, rt_line ); 
+				write( my_line, string'(", "));	
+				hwrite( my_line, immediate ); 
+				writeline(output, my_line);				
 		elsif opcode = "000110" then		-- blez
+				write( my_line, string'("BLEZ ") );
+				write( my_line, rs_line ); 
+				write( my_line, string'(", "));	
+				hwrite( my_line, immediate ); 
+				writeline(output, my_line);				
 		elsif opcode = "000111" then		-- bgtz
+				write( my_line, string'("BGTZ ") );
+				write( my_line, rs_line ); 
+				write( my_line, string'(", "));	
+				hwrite( my_line, immediate ); 
+				writeline(output, my_line);				
 		elsif opcode = "001000" then		-- addi
+				write( my_line, string'("ADDI ") );
+				write( my_line, rt_line ); 
+				write( my_line, string'(", "));	
+				write( my_line, rs_line ); 
+				write( my_line, string'(", "));	
+				hwrite( my_line, immediate ); 
+				writeline(output, my_line);				
 		elsif opcode = "001001" then		-- addiu
+				write( my_line, string'("ADDIU ") );
+				write( my_line, rt_line ); 
+				write( my_line, string'(", "));	
+				write( my_line, rs_line ); 
+				write( my_line, string'(", "));	
+				hwrite( my_line, immediate ); 
+				writeline(output, my_line);				
 		elsif opcode = "001010" then		-- slti
+				write( my_line, string'("SLTI ") );
+				write( my_line, rt_line ); 
+				write( my_line, string'(", "));	
+				write( my_line, rs_line ); 
+				write( my_line, string'(", "));	
+				hwrite( my_line, immediate ); 
+				writeline(output, my_line);				
 		elsif opcode = "100011" then		-- lw
+				write( my_line, string'("LW ") );
+				write( my_line, rt_line ); 
+				write( my_line, string'(", "));
+				hwrite( my_line, immediate );
+				write( my_line, string'("("));
+				write( my_line, rs_line );
+				write(my_line, string'(")")); 	
+				writeline(output, my_line);				
 		elsif opcode = "101011" then		-- sw
+				write( my_line, string'("SW ") );
+				write( my_line, rt_line ); 
+				write( my_line, string'(", "));
+				hwrite( my_line, immediate );
+				write( my_line, string'("("));
+				write( my_line, rs_line );
+				write(my_line, string'(")")); 	
+				writeline(output, my_line);				
 		end if;
 	end process;
 	
