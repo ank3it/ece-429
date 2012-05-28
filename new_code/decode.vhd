@@ -35,7 +35,7 @@ architecture main of decode is
 	signal opcode, funct	: std_logic_vector(5 downto 0);
 	signal rs, rt, rd, shamt: std_logic_vector(4 downto 0);
 	signal immediate		: std_logic_vector(15 downto 0);
-	signal address			: std_logic_vector(25 downto 0);
+	signal target			: std_logic_vector(25 downto 0);
 	
 begin
 	-- Break up instruction into parts
@@ -46,18 +46,148 @@ begin
 	shamt <= insn(10 downto 6);		-- R type
 	funct <= insn(5 downto 0);		-- R type
 	immediate <= insn(15 downto 0);	-- I type
-	address <= insn(25 downto 0);	-- J type
+	target <= insn(25 downto 0);	-- J type
 	
 	-- Select correct instruction parts
 	process(pc) 
 	    variable my_line : line;  -- type 'line' comes from textio
+            variable rd_line : string(1 to 5);
+	    variable rs_line : string(1 to 5);
+	    variable rt_line : string(1 to 5);		
 	begin
-	           	    hwrite( my_line , pc);
+	          hwrite( my_line , pc);
                   write( my_line, string'(" :: "));
                   hwrite( my_line, insn);
                   writeline(output, my_line);
+		
+		-- REGISTERS MAPPING		
+		-- 0  	  --> $zero
+		-- 2-3    --> $v0-$v1		
+		-- 4-7    --> $a0-$a3 		
+		-- 8-15   --> $t0-$t7		
+		-- 16-23  --> $s0-$s7		
+		-- 24-25  --> $t8-$t9		
+		-- 28	  --> $gp		
+		-- 29     --> $sp		
+		-- 30	  --> $fp	
+		-- 31     --> $ra				
+	
+		-- COMMON FORMATS
+		-- rd, rs, rt 	( for add, and, sub, or, xor, nor, slt, sltu,  )  
+		-- rd, rt, <sa>	( for shift instructions )
+		-- rs, <offset> ( for bltz, bnez, blez, bgtz,  ) 
+		-- target ( for j )
+		-- rs, rt, <offset> ( for bne, beq )
+		-- rt, rs, <immediate> ( for addi, addiu, slti, )	
+		-- rt, <offset>(rs) ( for lw, sw )		
+	
+		-- NOP (manual pg 216) -- SLL r0
+	
+		case rd is
+			when "00000"  => rd_line := string'("$zero");--write( rd_line, string'("$zero") );
+			when "00010"  => rd_line := string'("$v0  "); 
+			when "00011"  => rd_line := string'("$v1  ");
+			when "00100"  => rd_line := string'("$a0  ");
+			when "00101"  => rd_line := string'("$a1  ");
+			when "00110"  => rd_line := string'("$a2  ");
+			when "00111"  => rd_line := string'("$a3  ");
+			when "01000"  => rd_line := string'("$t0  ");
+			when "01001"  => rd_line := string'("$t1  ");
+			when "01010"  => rd_line := string'("$t2  ");
+			when "01011"  => rd_line := string'("$t3  ");
+			when "01100"  => rd_line := string'("$t4  ");
+			when "01101"  => rd_line := string'("$t5  ");
+			when "01110"  => rd_line := string'("$t6  ");
+			when "01111"  => rd_line := string'("$t7  ");
+			when "10000"  => rd_line := string'("$s0  ");
+			when "10001"  => rd_line := string'("$s1  ");
+			when "10010"  => rd_line := string'("$s2  ");
+			when "10011"  => rd_line := string'("$s3  ");
+			when "10100"  => rd_line := string'("$s4  ");
+			when "10101"  => rd_line := string'("$s5  ");
+			when "10110"  => rd_line := string'("$s6  ");
+			when "10111"  => rd_line := string'("$s7  ");
+			when "11000"  => rd_line := string'("$t8  ");
+			when "11001"  => rd_line := string'("$t9  ");
+			when "11100"  => rd_line := string'("$gp  ");
+			when "11101"  => rd_line := string'("$sp  ");
+			when "11110"  => rd_line := string'("$fp  ");
+			when "11111"  => rd_line := string'("$ra  ");
+			when others =>
+		end case;
+		
+		case rs is
+			when "00000"  => rs_line := string'("$zero");--write( rd_line, string'("$zero") );
+			when "00010"  => rs_line := string'("$v0  "); 
+			when "00011"  => rs_line := string'("$v1  ");
+			when "00100"  => rs_line := string'("$a0  ");
+			when "00101"  => rs_line := string'("$a1  ");
+			when "00110"  => rs_line := string'("$a2  ");
+			when "00111"  => rs_line := string'("$a3  ");
+			when "01000"  => rs_line := string'("$t0  ");
+			when "01001"  => rs_line := string'("$t1  ");
+			when "01010"  => rs_line := string'("$t2  ");
+			when "01011"  => rs_line := string'("$t3  ");
+			when "01100"  => rs_line := string'("$t4  ");
+			when "01101"  => rs_line := string'("$t5  ");
+			when "01110"  => rs_line := string'("$t6  ");
+			when "01111"  => rs_line := string'("$t7  ");
+			when "10000"  => rs_line := string'("$s0  ");
+			when "10001"  => rs_line := string'("$s1  ");
+			when "10010"  => rs_line := string'("$s2  ");
+			when "10011"  => rs_line := string'("$s3  ");
+			when "10100"  => rs_line := string'("$s4  ");
+			when "10101"  => rs_line := string'("$s5  ");
+			when "10110"  => rs_line := string'("$s6  ");
+			when "10111"  => rs_line := string'("$s7  ");
+			when "11000"  => rs_line := string'("$t8  ");
+			when "11001"  => rs_line := string'("$t9  ");
+			when "11100"  => rs_line := string'("$gp  ");
+			when "11101"  => rs_line := string'("$sp  ");
+			when "11110"  => rs_line := string'("$fp  ");
+			when "11111"  => rs_line := string'("$ra  ");
+			when others =>
+		end case;
+
+		case rt is
+			when "00000"  => rt_line := string'("$zero");--write( rd_line, string'("$zero") );
+			when "00010"  => rt_line := string'("$v0  "); 
+			when "00011"  => rt_line := string'("$v1  ");
+			when "00100"  => rt_line := string'("$a0  ");
+			when "00101"  => rt_line := string'("$a1  ");
+			when "00110"  => rt_line := string'("$a2  ");
+			when "00111"  => rt_line := string'("$a3  ");
+			when "01000"  => rt_line := string'("$t0  ");
+			when "01001"  => rt_line := string'("$t1  ");
+			when "01010"  => rt_line := string'("$t2  ");
+			when "01011"  => rt_line := string'("$t3  ");
+			when "01100"  => rt_line := string'("$t4  ");
+			when "01101"  => rt_line := string'("$t5  ");
+			when "01110"  => rt_line := string'("$t6  ");
+			when "01111"  => rt_line := string'("$t7  ");
+			when "10000"  => rt_line := string'("$s0  ");
+			when "10001"  => rt_line := string'("$s1  ");
+			when "10010"  => rt_line := string'("$s2  ");
+			when "10011"  => rt_line := string'("$s3  ");
+			when "10100"  => rt_line := string'("$s4  ");
+			when "10101"  => rt_line := string'("$s5  ");
+			when "10110"  => rt_line := string'("$s6  ");
+			when "10111"  => rd_line := string'("$s7  ");
+			when "11000"  => rt_line := string'("$t8  ");
+			when "11001"  => rt_line := string'("$t9  ");
+			when "11100"  => rt_line := string'("$gp  ");
+			when "11101"  => rt_line := string'("$sp  ");
+			when "11110"  => rt_line := string'("$fp  ");
+			when "11111"  => rt_line := string'("$ra  ");
+			when others =>
+		end case;
+
 		if opcode = "000000" then
 			if funct = "000000" then		-- sll
+				write( my_line, string'("SLL ") );
+				write( my_line, rd_line ); 
+				write( my_line, string'(", "));	
+				
 			elsif funct = "000010" then		-- srl
 			elsif funct = "000011" then		-- sra
 			elsif funct = "100000" then		-- add
