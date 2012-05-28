@@ -45,7 +45,7 @@ begin
 	rd <= insn(15 downto 11);		-- R type
 	shamt <= insn(10 downto 6);		-- R type
 	funct <= insn(5 downto 0);		-- R type
-	immediate <= insn(15 downto 0);	-- I type
+	immediate <= insn(15 downto 0);	-- I type or OFFSET
 	target <= insn(25 downto 0);	-- J type
 	
 	-- Select correct instruction parts
@@ -290,10 +290,30 @@ begin
 			end if;
 		elsif opcode = "000001" then
 			if rt = "00000" then			-- bltz
+				write( my_line, string'("BLTZ ") );
+				write( my_line, rs_line ); 
+				write( my_line, string'(", "));	
+				hwrite( my_line, immediate ); 
+				writeline(output, my_line);				
 			elsif rt = "00001" then			-- bgez
+				write( my_line, string'("BGEZ ") );
+				write( my_line, rs_line ); 
+				write( my_line, string'(", "));	
+				hwrite( my_line, immediate ); 
+				writeline(output, my_line);				
 			end if;
 		elsif opcode = "000010" then		-- j
+				write( my_line, string'("J ") );
+				hwrite( my_line, target ); 
+				writeline(output, my_line);				
 		elsif opcode = "000100" then		-- beq
+				write( my_line, string'("BEQ ") );
+				write( my_line, rs_line ); 
+				write( my_line, string'(", "));	
+				write( my_line, rt_line ); 
+				write( my_line, string'(", "));	
+				hwrite( my_line, immediate ); 
+				writeline(output, my_line);				
 		elsif opcode = "000101" then		-- bne
 		elsif opcode = "000110" then		-- blez
 		elsif opcode = "000111" then		-- bgtz
