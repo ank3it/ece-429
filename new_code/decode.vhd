@@ -187,19 +187,106 @@ begin
 				write( my_line, string'("SLL ") );
 				write( my_line, rd_line ); 
 				write( my_line, string'(", "));	
-				
+				write( my_line, rt_line );
+				write( my_line, string'(", "));
+				hwrite( my_line, shamt ); 
+				writeline(output, my_line);				
 			elsif funct = "000010" then		-- srl
+				write( my_line, string'("SRL ") );
+				write( my_line, rd_line ); 
+				write( my_line, string'(", "));	
+				write( my_line, rt_line );
+				write( my_line, string'(", "));
+				hwrite( my_line, shamt ); 
+				writeline(output, my_line);				
 			elsif funct = "000011" then		-- sra
+				write( my_line, string'("SRA ") );
+				write( my_line, rd_line ); 
+				write( my_line, string'(", "));	
+				write( my_line, rt_line );
+				write( my_line, string'(", "));
+				hwrite( my_line, shamt ); 
+				writeline(output, my_line);				
 			elsif funct = "100000" then		-- add
+				write( my_line, string'("ADD ") );
+				write( my_line, rd_line ); 
+				write( my_line, string'(", "));	
+				write( my_line, rs_line );
+				write( my_line, string'(", "));
+				write( my_line, rt_line ); 
+				writeline(output, my_line);				
 			elsif funct = "100001" then		-- addu
+				write( my_line, string'("ADDU ") );
+				write( my_line, rd_line ); 
+				write( my_line, string'(", "));	
+				write( my_line, rs_line );
+				write( my_line, string'(", "));
+				write( my_line, rt_line ); 
+				writeline(output, my_line);				
 			elsif funct = "100010" then		-- sub
+				write( my_line, string'("SUB ") );
+				write( my_line, rd_line ); 
+				write( my_line, string'(", "));	
+				write( my_line, rs_line );
+				write( my_line, string'(", "));
+				write( my_line, rt_line ); 
+				writeline(output, my_line);				
 			elsif funct = "100011" then		-- subu
+				write( my_line, string'("SUBU ") );
+				write( my_line, rd_line ); 
+				write( my_line, string'(", "));	
+				write( my_line, rt_line );
+				write( my_line, string'(", "));
+				write( my_line, shamt ); 
+				writeline(output, my_line);				
 			elsif funct = "100100" then		-- and
+				write( my_line, string'("AND ") );
+				write( my_line, rd_line ); 
+				write( my_line, string'(", "));	
+				write( my_line, rs_line );
+				write( my_line, string'(", "));
+				write( my_line, rt_line ); 
+				writeline(output, my_line);				
 			elsif funct = "100101" then		-- or
+				write( my_line, string'("OR ") );
+				write( my_line, rd_line ); 
+				write( my_line, string'(", "));	
+				write( my_line, rs_line );
+				write( my_line, string'(", "));
+				write( my_line, rt_line ); 
+				writeline(output, my_line);				
 			elsif funct = "100110" then		-- xor
+				write( my_line, string'("XOR ") );
+				write( my_line, rd_line ); 
+				write( my_line, string'(", "));	
+				write( my_line, rs_line );
+				write( my_line, string'(", "));
+				write( my_line, rt_line ); 
+				writeline(output, my_line);				
 			elsif funct = "100111" then		-- nor
+				write( my_line, string'("NOR ") );
+				write( my_line, rd_line ); 
+				write( my_line, string'(", "));	
+				write( my_line, rs_line );
+				write( my_line, string'(", "));
+				write( my_line, rt_line ); 
+				writeline(output, my_line);				
 			elsif funct = "101010" then		-- slt
+				write( my_line, string'("SLT ") );
+				write( my_line, rd_line ); 
+				write( my_line, string'(", "));	
+				write( my_line, rs_line );
+				write( my_line, string'(", "));
+				write( my_line, rt_line ); 
+				writeline(output, my_line);				
 			elsif funct = "101011" then		-- sltu
+				write( my_line, string'("SLTU ") );
+				write( my_line, rd_line ); 
+				write( my_line, string'(", "));	
+				write( my_line, rs_line );
+				write( my_line, string'(", "));
+				write( my_line, rt_line ); 
+				writeline(output, my_line);				
 			end if;
 		elsif opcode = "000001" then
 			if rt = "00000" then			-- bltz
