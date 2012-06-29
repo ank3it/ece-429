@@ -29,14 +29,13 @@ architecture main of register_file is
         type regfile_type is array (0 to size - 1) of std_logic_vector(data_width - 1 downto 0);
         signal regfile : regfile_type ;
 begin
+	-- Read
+	data_out1 <= regfile(to_integer(unsigned(read_address1)));
+	data_out2 <= regfile(to_integer(unsigned(read_address2)));
 
-	RW : process
+	process
 	begin
-		wait until rising_edge(clock);
-		-- Read
-		data_out1 <= regfile(to_integer(unsigned(read_address1)));
-		data_out2 <= regfile(to_integer(unsigned(read_address2)));
-		
+		wait until falling_edge(clock);		
 		-- Write
 		if write_enable = '1' then
 			regfile(to_integer(unsigned(write_address))) <= data_in;
