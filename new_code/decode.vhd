@@ -16,11 +16,19 @@ entity decode is
 		stall		: in std_logic;
 		
 		-- Outputs
+		rsOut		: out std_logic_vector(31 downto 0);
+		rtOut		: out std_logic_vector(31 downto 0);
 		opType		: out std_logic_vector(11 downto 0);
 		source		: out std_logic_vector(31 downto 0);
 		destination	: out std_logic_vector(31 downto 0);
 		insnOut		: out std_logic_vector(31 downto 0);
-		pcOut		: out std_logic_vector(31 downto 0)
+		pcOut		: out std_logic_vector(31 downto 0);
+		
+		-- Reg file signals
+		rf_ra1		: out std_logic_vector(4 downto 0);
+		rf_ra2		: out std_logic_vector(4 downto 0);
+		rf_data1	: in std_logic_vector(31 downto 0);
+		rf_data2	: in std_logic_vector(31 downto 0)
 	);
 end entity;
 
