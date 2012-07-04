@@ -12,7 +12,7 @@ end tb;
 architecture main of tb is
 		signal clock2 		:  std_logic;
 		signal reset 		:  std_logic;
-		constant period  	: time := 2 ms;
+		constant period  	: time := 20 us;
 		signal addr_load  	: std_logic_vector(31 downto 0);
 		signal address     : std_logic_vector(31 downto 0);
 		signal addr_fetch 	: std_logic_vector(31 downto 0);
