@@ -50,6 +50,8 @@ architecture main of execute is
     --signal shift_lt_2 : std_logic_vector(31 downto 0);
     --signal shift_lt_1 : std_logic_vector(31 downto 0);
     
+    signal pcOut : std_logic_vector( 31 downto 0);
+    signal insnOut: std_logic_vector( 31 downto 0);
     signal slt_s : std_logic;
     signal slt_u : std_logic;
     signal pcplus4 : std_logic_vector( 31 downto 0 );
@@ -86,9 +88,15 @@ architecture main of execute is
   --signal aluout
 begin
   
+  	process
+	  begin
+	 wait until rising_edge(clk);
+	 	insnOut <= insn;
+	  	pcOut <= pc;
+	 end process;
+	 
     process(pc) 
     	variable my_line : line;  -- type 'line' comes from textio
-    	variable o : std_logic_vector( 31 downto 0);
       begin
       
       	--write( my_line, string'(" rs =  "));
@@ -97,13 +105,12 @@ begin
       	-- hwrite( my_line, rt);
         --wait until rising_edge(clk);
                  -- write( my_line, string'(" Execute "));
-                  o := output1;
                   write( my_line, string'("E: "));
-                  hwrite( my_line, pc);
+                  hwrite( my_line, pcOut);
                   write( my_line, string'(" : "));
-                  hwrite( my_line, insn);
+                  hwrite( my_line, insnOut);
      			  write( my_line, string'("    "));
-                  hwrite( my_line, o);
+                  hwrite( my_line, output1);
                   writeline(output, my_line);      
     end process;
         
