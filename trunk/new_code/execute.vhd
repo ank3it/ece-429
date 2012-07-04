@@ -177,8 +177,8 @@ begin
             else   (std_logic_vector(alu_sr1) XOR std_logic_vector(alu_sr2)) when logical_op_ctl = "10"
             else   (std_logic_vector(alu_sr1) NOR std_logic_vector(alu_sr2));  
     
-     slt_s <= '1' when ( signed(rs) < signed(rt) ) else '0';
-     slt_u <= '1' when ( unsigned(rs) < unsigned(rt) ) else '0';
+     slt_s <= '1' when ( signed(alu_sr1) < signed(alu_sr2) ) else '0';
+     slt_u <= '1' when ( unsigned(alu_sr1) < unsigned(alu_sr2) ) else '0';
      slt_out( 31 downto 1 ) <= ( 31 downto 1 => '0' );
      slt_out(0) <= slt_s when slt_ctl = '1' else '0';
      
