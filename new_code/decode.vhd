@@ -128,7 +128,7 @@ begin
 					write( my_line, string'(", "));	
 					write( my_line, to_integer(unsigned(rt)));
 					write( my_line, string'(", "));
-					hwrite( my_line, shamt );
+					write( my_line, to_integer(unsigned(shamt)) );
 
 					rf_ra1 := rt;
 					--rtOut <= rf_data1; -- Get value of rt from register file
