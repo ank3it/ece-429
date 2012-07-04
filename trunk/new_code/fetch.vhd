@@ -32,7 +32,7 @@ architecture main of fetch is
      fetch2:process
         variable my_line : line;  -- type 'line' comes from textio
         variable addressword : unsigned(31 downto 0) := x"00000000";
-        variable counter : integer := 50;
+        variable counter : integer := 130;
       begin
         wait until rising_edge(clk);
         if reset = '0' then
