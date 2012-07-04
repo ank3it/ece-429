@@ -118,17 +118,17 @@ begin
 				writeline(output, my_line);
 				
 				-- Print execute output
-                  write( my_line, string'("E: "));
-                  hwrite( my_line, pcOut);
-                  write( my_line, string'(" : "));
-                  hwrite( my_line, insnOut);
-     			  write( my_line, string'(" DEC: "));
-                  write( my_line, to_integer(signed(output1)));
-                  write( my_line, string'(" HEX: "));
-                  hwrite( my_line, output1);
-                  write( my_line, string'(" BT: "));
-                  write( my_line, (branch_taken_out));
-                  writeline(output, my_line);      
+                write( my_line, string'("E:PC "));
+                hwrite( my_line, pcOut);
+                write( my_line, string'(" INS: "));
+                hwrite( my_line, insnOut);
+     			write( my_line, string'(" DEC: "));
+                write( my_line, to_integer(signed(output1)));
+                write( my_line, string'(" HEX: "));
+                hwrite( my_line, output1);
+                write( my_line, string'(" BT: "));
+                write( my_line, (branch_taken_out));
+                writeline(output, my_line);      
     end process;
         
   
