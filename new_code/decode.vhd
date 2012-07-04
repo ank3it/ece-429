@@ -48,6 +48,9 @@ begin
 	    variable jumpTarget : std_logic_vector(31 downto 0);
 	    
 	begin
+	  
+	  insnOut <= insn;
+	  pcOut <= pc;
 	                hwrite( my_line , pc);
                   write( my_line, string'(" : "));
                   hwrite( my_line, insn);
@@ -511,5 +514,6 @@ begin
 		end if;
 		writeline(output, my_line);	
 	end process;
+	
 	
 end architecture;

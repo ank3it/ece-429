@@ -28,6 +28,11 @@ architecture main of tb is
 		signal stall : std_logic;
 		signal insnOut		: std_logic_vector(31 downto 0);
 		signal pcOut		: std_logic_vector(31 downto 0);
+		signal rsOut		: std_logic_vector(31 downto 0);
+		signal rtOut		: std_logic_vector(31 downto 0);
+		signal controlSignal		: std_logic_vector(19 downto 0);
+		signal output_fromExec : std_logic_vector(31 downto 0);
+		signal output_branch_taken : std_logic;
 		
 		-- Signals for register file
 		signal rf_read_address1		: std_logic_vector(4 downto 0);
@@ -39,7 +44,7 @@ architecture main of tb is
 		signal rf_data_out2			: std_logic_vector(31 downto 0);
    begin
 
-     load : entity work.load(main)
+   load : entity work.load(main)
       port map(
           clk => clock2,
           address => addr_load,
@@ -90,13 +95,29 @@ architecture main of tb is
         insn => data_FromFetch,
         pc => pc,
         stall => stall,
+        rsOut => rsOut,
+        rtOut => rtOut,
 		    insnOut		=> insnOut,
 		    pcOut		=> pcOut,
+		    controlSignal => controlSignal,
 			
-			rf_ra1 => rf_read_address1,
-			rf_ra2 => rf_read_address2,
-			rf_data1 => rf_data_out1,
-			rf_data2 => rf_data_out2
+			  rf_ra1 => rf_read_address1,
+			  rf_ra2 => rf_read_address2,
+			  rf_data1 => rf_data_out1,
+			  rf_data2 => rf_data_out2
+		);
+		
+		execute : entity work.execute(main)
+		 port map (
+		      clk => clock2,
+		      insn => insnOut,
+          pc => pcOut,
+          stall => stall,
+		      controlSignal		=> controlSignal,
+		      rs		=> rsOut,
+			    rt		=> rtOut,
+			    output => output_fromExec,
+			    output_branch_taken => output_branch_taken
 		);
      
     ----------------------------------------------------
