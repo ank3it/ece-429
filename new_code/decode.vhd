@@ -167,8 +167,12 @@ begin
 				
 				rf_ra1 <= rt;
 				rf_ra2 <= rs;
+				
 				rtOut <= rf_data1;  -- Get value of rt from register file
 				rsOut <= rf_data2;  -- Get value of rs from register file
+				hwrite( my_line, rf_data1 );
+				write( my_line, string'(", "));	
+				hwrite( my_line, rf_data2 );
 				controlSignal(3) <= '0';  -- Set ALU op to add
 				controlSignal(19 downto 17) <= "001";  -- Set output selector
 			elsif funct = "100010" then		-- sub

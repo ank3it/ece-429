@@ -44,6 +44,7 @@ architecture main of tb is
 		signal rf_data_out2			: std_logic_vector(31 downto 0);
    begin
 
+	rf_write_enable <= '0';
    load : entity work.load(main)
       port map(
           clk => clock2,
@@ -116,7 +117,7 @@ architecture main of tb is
 		      controlSignal		=> controlSignal,
 		      rs		=> rsOut,
 			    rt		=> rtOut,
-			    output => output_fromExec,
+			    output_exec => output_fromExec,
 			    output_branch_taken => output_branch_taken
 		);
      
