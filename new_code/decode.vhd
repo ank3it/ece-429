@@ -16,11 +16,11 @@ entity decode is
 		stall		: in std_logic;
 		
 		-- Outputs
-		rsOut		: out std_logic_vector(31 downto 0);
-		rtOut		: out std_logic_vector(31 downto 0);
+		rsOut2		: out std_logic_vector(31 downto 0);
+		rtOut2		: out std_logic_vector(31 downto 0);
 		insnOut		: out std_logic_vector(31 downto 0);
 		pcOut		: out std_logic_vector(31 downto 0);
-		controlSignal : out std_logic_vector(19 downto 0);
+		controlSignal2 : out std_logic_vector(19 downto 0);
 		
 		-- Reg file signals
 		rf_ra1_out		: out std_logic_vector(4 downto 0);
@@ -31,7 +31,9 @@ entity decode is
 end entity;
 
 architecture main of decode is
-	 --signal rs, rt: std_logic_vector(4 downto 0);
+	 signal controlSignal: std_logic_vector(19 downto 0);
+	 signal rsOut: std_logic_vector(31 downto 0);
+	 signal rtOut: std_logic_vector(31 downto 0);
 begin
 	-- Break up instruction into parts
 	
@@ -43,8 +45,11 @@ begin
 	process
 	  begin
 	 wait until rising_edge(clk);
-	 	--insnOut <= insn;
-	  	--pcOut <= pc;
+	 	insnOut <= insn;
+	  	pcOut <= pc;
+	  	controlSignal2 <= controlSignal;
+	  	rsOut2 <= rsOut;
+	  	rtOut2 <= rtOut;
 	 end process;
 	
 	-- Select correct instruction parts
@@ -67,8 +72,8 @@ begin
 	    
 	begin
 	  
-	  insnOut <= insn;
-	  	pcOut <= pc;
+	  --insnOut <= insn;
+	  --pcOut <= pc;
 	  write( my_line, string'("D: "));
 	  hwrite( my_line , pc);
       write( my_line, string'(" : "));
