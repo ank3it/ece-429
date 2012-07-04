@@ -43,8 +43,8 @@ begin
 	process
 	  begin
 	 wait until rising_edge(clk);
-	 	insnOut <= insn;
-	  	pcOut <= pc;
+	 	--insnOut <= insn;
+	  	--pcOut <= pc;
 	 end process;
 	
 	-- Select correct instruction parts
@@ -67,6 +67,8 @@ begin
 	    
 	begin
 	  
+	  insnOut <= insn;
+	  	pcOut <= pc;
 	  write( my_line, string'("D: "));
 	  hwrite( my_line , pc);
       write( my_line, string'(" : "));
