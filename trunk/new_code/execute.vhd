@@ -93,6 +93,8 @@ begin
 	 wait until rising_edge(clk);
 	 	insnOut <= insn;
 	  	pcOut <= pc;
+	  	output_exec <= output1;
+	  	output_branch_taken <= branch_taken_out;
 	 end process;
 	 
     process(pc) 
@@ -115,14 +117,13 @@ begin
     end process;
         
   
-  	output_exec <= output1;
   	output1 <= alu_out when output_select_ctl = "001"
 			else logical_out when output_select_ctl = "011"
 			else slt_out when output_select_ctl = "100"
 			else shift_out when output_select_ctl = "010"
 			else branch_addr_out when  output_select_ctl = "101"
 			else jump_out when output_select_ctl = "110"
-			else (others => '0');
+			else (others => '0');		
     imme_control <= controlSignal(0);
     sign_extended_control <= controlSignal(1);
     alu_signed_ctl <= controlSignal(2);
@@ -187,12 +188,12 @@ begin
      bt_BNE <= '0' when (rs = rt ) else '1';
      
      branch_addr_out <= std_logic_vector(unsigned(pcplus4)+ unsigned(signed(sign_extended) sll 2));   
-     branch_taken_out <= bt_BEQ when branch_ctl = "100"
-                  else   bt_BGEZ when branch_ctl = "101"
-                  else   bt_BGTZ when branch_ctl = "111"
-                  else   bt_BLEZ when branch_ctl = "110"
-                  else   bt_BLTZ when branch_ctl = "001"
-                  else   bt_BNE when branch_ctl = "101"  
+     branch_taken_out <= bt_BEQ when  (branch_ctl = "100" AND output_select_ctl = "101")
+                  else   bt_BGEZ when (branch_ctl = "101" AND output_select_ctl = "101")
+                  else   bt_BGTZ when (branch_ctl = "111" AND output_select_ctl = "101")
+                  else   bt_BLEZ when (branch_ctl = "110" AND output_select_ctl = "101")
+                  else   bt_BLTZ when (branch_ctl = "001" AND output_select_ctl = "101")
+                  else   bt_BNE when  (branch_ctl = "101" AND output_select_ctl = "101")
                   else   '0';
                       
      
