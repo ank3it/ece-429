@@ -4,6 +4,8 @@
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
+use std.textio.all;
+use IEEE.std_logic_textio.all;          -- I/O for logic types
 
 entity execute is
 	port (
@@ -18,7 +20,7 @@ entity execute is
 	--destreg  : in std_logic_vector( 4 downto 0);
 	
 	-- Outputs
-	output			: out std_logic_vector(31 downto 0);
+	output_exec			: out std_logic_vector(31 downto 0);
 	output_branch_taken   : out std_logic
 	);
 end execute;
@@ -57,7 +59,7 @@ architecture main of execute is
     signal shift_rt_s : std_logic_vector( 31 downto 0);
     signal shift_amt : unsigned(4 downto 0);
     signal shift_sign : std_logic;
-    signal temp_alu_out : unsigned( 32 downto 0);
+    signal temp_alu_out : unsigned( 31 downto 0);
     signal alu_sr1 : unsigned ( 31 downto 0);
     signal alu_sr2 : unsigned ( 31 downto 0);
     signal sign: std_logic;
@@ -79,37 +81,59 @@ architecture main of execute is
     signal jump_out : std_logic_vector( 31 downto 0 );
     signal shift_out : std_logic_vector( 31 downto 0);
     signal alu_out : std_logic_vector( 31 downto 0);
+    
+    signal output1 : std_logic_vector( 31 downto 0);
   --signal aluout
 begin
   
-    process
+    process(pc) 
+    	variable my_line : line;  -- type 'line' comes from textio
       begin
-        wait until rising_edge(clk);
+      
+      	write( my_line, string'(" rs =  "));
+      	 hwrite( my_line, rs);
+      	write( my_line, string'(" rt =  "));
+      	 hwrite( my_line, rt);
+        --wait until rising_edge(clk);
         if  output_select_ctl = "001" then
-            output <= alu_out;
+        	write( my_line, string'(" ALU "));
+            output1 <= alu_out;
             branch_taken_out <= '0';  
         elsif output_select_ctl = "011" then
-            output <= logical_out;
+        	write( my_line, string'(" Logical "));
+            output1 <= logical_out;
             branch_taken_out <= '0'; 
         elsif output_select_ctl = "100" then
-            output <= slt_out;    
+        	write( my_line, string'(" slt "));
+            output1 <= slt_out;    
             branch_taken_out <= '0'; 
         elsif output_select_ctl = "010" then
-            output <= shift_out;    
+        	write( my_line, string'(" Shift "));
+            output1 <= shift_out;    
             branch_taken_out <= '0';  
         elsif output_select_ctl = "101" then
-            output <= branch_addr_out;  
+        	write( my_line, string'(" Branch "));
+            output1 <= branch_addr_out;  
             branch_taken_out <= '1'  ;
         elsif  output_select_ctl = "110" then
-            output <= jump_out;  
+        	write( my_line, string'(" Jump "));
+            output1 <= jump_out;  
             branch_taken_out <= '0'  ;   
        else
-            output <= "0";  
+       		write( my_line, string'(" Others "));
+            output1(31 downto 0 ) <= ( 31 downto 0 => '0');  
             branch_taken_out <= '0'  ;  
-      end if;             
+      end if;  
+                  write( my_line, string'(" Execute "));
+                  hwrite( my_line, pc);
+                  write( my_line, string'(" : "));
+                  hwrite( my_line, output1);
+                  writeline(output, my_line);      
     end process;
         
   
+  	output_exec <= output1;
+  	
     imme_control <= controlSignal(0);
     sign_extended_control <= controlSignal(1);
     alu_signed_ctl <= controlSignal(2);

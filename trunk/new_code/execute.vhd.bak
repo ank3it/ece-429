@@ -57,7 +57,7 @@ architecture main of execute is
     signal shift_rt_s : std_logic_vector( 31 downto 0);
     signal shift_amt : unsigned(4 downto 0);
     signal shift_sign : std_logic;
-    signal temp_alu_out : unsigned( 32 downto 0);
+    signal temp_alu_out : unsigned( 31 downto 0);
     signal alu_sr1 : unsigned ( 31 downto 0);
     signal alu_sr2 : unsigned ( 31 downto 0);
     signal sign: std_logic;
@@ -88,19 +88,19 @@ begin
         if  output_select_ctl = "001" then
             output <= alu_out;
             branch_taken_out <= '0';  
-        elsif output_select_ctl = " 011 " then
+        elsif output_select_ctl = "011" then
             output <= logical_out;
             branch_taken_out <= '0'; 
-        elsif output_select_ctl = " 100 " then
+        elsif output_select_ctl = "100" then
             output <= slt_out;    
             branch_taken_out <= '0'; 
-        elsif output_select_ctl = " 010 " then
+        elsif output_select_ctl = "010" then
             output <= shift_out;    
             branch_taken_out <= '0';  
-        elsif output_select_ctl = " 101 " then
+        elsif output_select_ctl = "101" then
             output <= branch_addr_out;  
             branch_taken_out <= '1'  ;
-        elsif  output_select_ctl = " 110 " then
+        elsif  output_select_ctl = "110" then
             output <= jump_out;  
             branch_taken_out <= '0'  ;   
        else
