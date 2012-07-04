@@ -329,7 +329,7 @@ begin
 				rf_ra2 := rs;
 				--rsOut <= rf_data2;  -- Get value of rs from register file
 				controlSignal(0) <= '1';  -- Need to read immediate field
-				controlSignal(1) <= '0';  -- Don't sign extend
+				controlSignal(1) <= '1';  -- sign extendnd
 				controlSignal(4) <= '0';  -- Left shift
 				controlSignal(5) <= '0';  -- Logical shift
 				controlSignal(16 downto 12) <= "00010"; -- shift amount = 2
@@ -345,7 +345,7 @@ begin
 				rf_ra2 := rs;
 				--rsOut <= rf_data2;  -- Get value of rs from register file
 				controlSignal(0) <= '1';  -- Need to read immediate field
-				controlSignal(1) <= '0';  -- Don't sign extend
+				controlSignal(1) <= '1';  -- sign extend
 				controlSignal(4) <= '0';  -- Left shift
 				controlSignal(5) <= '0';  -- Logical shift
 				controlSignal(16 downto 12) <= "00010"; -- shift amount = 2
@@ -375,7 +375,7 @@ begin
 				--rtOut <= rf_data1;  -- Get value of rt from register file
 				--rsOut <= rf_data2;  -- Get value of rs from register file
 				controlSignal(0) <= '1';  -- Need to read immediate field
-				controlSignal(1) <= '0';  -- Don't sign extend
+				controlSignal(1) <= '1';  -- sign extend
 				controlSignal(4) <= '0';  -- Left shift
 				controlSignal(5) <= '0';  -- Logical shift
 				controlSignal(16 downto 12) <= "00010"; -- shift amount = 2
@@ -395,7 +395,7 @@ begin
 				--rtOut <= rf_data1;  -- Get value of rt from register file
 				--rsOut <= rf_data2;  -- Get value of rs from register file
 				controlSignal(0) <= '1';  -- Need to read immediate field
-				controlSignal(1) <= '0';  -- Don't sign extend
+				controlSignal(1) <= '1';  -- sign extend
 				controlSignal(4) <= '0';  -- Left shift
 				controlSignal(5) <= '0';  -- Logical shift
 				controlSignal(16 downto 12) <= "00010"; -- shift amount = 2
@@ -411,7 +411,7 @@ begin
 				rf_ra2 := rs;
 				--rsOut <= rf_data2;  -- Get value of rs from register file
 				controlSignal(0) <= '1';  -- Need to read immediate field
-				controlSignal(1) <= '0';  -- Don't sign extend
+				controlSignal(1) <= '1';  -- sign extend
 				controlSignal(4) <= '0';  -- Left shift
 				controlSignal(5) <= '0';  -- Logical shift
 				controlSignal(16 downto 12) <= "00010"; -- shift amount = 2
@@ -427,7 +427,7 @@ begin
 				rf_ra2 := rs;
 				--rsOut <= rf_data2;  -- Get value of rs from register file
 				controlSignal(0) <= '1';  -- Need to read immediate field
-				controlSignal(1) <= '0';  -- Don't sign extend
+				controlSignal(1) <= '1';  -- sign extend
 				controlSignal(4) <= '0';  -- Left shift
 				controlSignal(5) <= '0';  -- Logical shift
 				controlSignal(16 downto 12) <= "00010"; -- shift amount = 2
