@@ -26,9 +26,6 @@ architecture main of tb is
 		signal address2  	: std_logic_vector(31 downto 0);
 		signal pc : std_logic_vector(31 downto 0);
 		signal stall : std_logic;
-		signal opType		: std_logic_vector(11 downto 0);
-		signal source		: std_logic_vector(31 downto 0);
-		signal destination	: std_logic_vector(31 downto 0);
 		signal insnOut		: std_logic_vector(31 downto 0);
 		signal pcOut		: std_logic_vector(31 downto 0);
 		
@@ -93,9 +90,6 @@ architecture main of tb is
         insn => data_FromFetch,
         pc => pc,
         stall => stall,
-       	opType		=> opType,
-		    source		=> source,
-		    destination	=> destination,
 		    insnOut		=> insnOut,
 		    pcOut		=> pcOut,
 			
