@@ -74,9 +74,9 @@ begin
 	  
 	  --insnOut <= insn;
 	  --pcOut <= pc;
-	  write( my_line, string'("D: "));
+	  write( my_line, string'("D:PC "));
 	  hwrite( my_line , pc);
-      write( my_line, string'(" : "));
+      write( my_line, string'(" INS: "));
       hwrite( my_line, insn);
       write( my_line, string'("    "));
       -- writeline(output, my_line);
