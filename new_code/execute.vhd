@@ -107,6 +107,17 @@ begin
       	-- hwrite( my_line, rt);
         --wait until rising_edge(clk);
                  -- write( my_line, string'(" Execute "));
+				
+				-- Print registers
+				write( my_line, string'("D: "));
+				hwrite( my_line , pc);
+				write( my_line, string'(" : REG[rs] = "));
+				write( my_line, to_integer(unsigned(rs)));
+				write( my_line, string'(" REG[rt] = "));
+				write( my_line, to_integer(unsigned(rt)));		
+				writeline(output, my_line);
+				
+				-- Print execute output
                   write( my_line, string'("E: "));
                   hwrite( my_line, pcOut);
                   write( my_line, string'(" : "));
