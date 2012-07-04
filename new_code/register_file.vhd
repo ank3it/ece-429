@@ -4,7 +4,8 @@
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
-
+use std.textio.all;
+use IEEE.std_logic_textio.all;          -- I/O for logic types
 
 entity register_file is
 	generic(  
@@ -28,17 +29,21 @@ end register_file;
 architecture main of register_file is        
         type regfile_type is array (0 to size - 1) of std_logic_vector(data_width - 1 downto 0);
         signal regfile : regfile_type ;
+        signal abc : std_logic_vector(data_width - 1 downto 0);
 begin
 	-- Read
 	data_out1 <= regfile(to_integer(unsigned(read_address1)));
 	data_out2 <= regfile(to_integer(unsigned(read_address2)));
 
 	process
+		variable my_line : line;  -- type 'line' comes from textio
+		variable num: unsigned( 4 downto 0);
 	begin
-		--wait until rising_edge(clock);
+		wait until rising_edge(clock);
 		--for i in 0 to 31 loop
 		--regfile(i) <= std_logic_vector(to_unsigned(i,32));
 		--end loop;
+		--abc <= std_logic_vector(to_unsigned(1,32));
 		regfile(0) <=  "00000000000000000000000000000000";
 		regfile(1) <=  "00000000000000000000000000000001";
 		regfile(2) <=  "00000000000000000000000000000010";
@@ -71,6 +76,12 @@ begin
 		regfile(29) <=  "00000000000000000000000000011101";
 		regfile(30) <=  "00000000000000000000000000011110";
 		regfile(31) <=  "00000000000000000000000000011111";
+		wait until rising_edge(clock);
+		--write( my_line, string'(" Reg File "));
+        --           hwrite( my_line, abc);
+        --          write( my_line, string'(" Reg File "));
+        --          hwrite( my_line, regfile(28));
+        --          writeline(output, my_line);
 		wait;
 	end process;
 	
@@ -79,7 +90,7 @@ begin
 		wait until falling_edge(clock);		
 		-- Write
 		if write_enable = '1' then
-			regfile(to_integer(unsigned(write_address))) <= data_in;
+		--	regfile(to_integer(unsigned(write_address))) <= data_in;
 		end if;
 	end process;
 

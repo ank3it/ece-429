@@ -44,7 +44,7 @@ architecture main of tb is
 		signal rf_data_out2			: std_logic_vector(31 downto 0);
    begin
 
-	rf_write_enable <= '0';
+   rf_write_enable <= '0';
    load : entity work.load(main)
       port map(
           clk => clock2,
@@ -102,8 +102,8 @@ architecture main of tb is
 		    pcOut		=> pcOut,
 		    controlSignal => controlSignal,
 			
-			  rf_ra1 => rf_read_address1,
-			  rf_ra2 => rf_read_address2,
+			  rf_ra1_out => rf_read_address1,
+			  rf_ra2_out => rf_read_address2,
 			  rf_data1 => rf_data_out1,
 			  rf_data2 => rf_data_out2
 		);
