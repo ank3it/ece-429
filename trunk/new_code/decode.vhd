@@ -31,16 +31,21 @@ entity decode is
 end entity;
 
 architecture main of decode is
-	 signal rs, rt: std_logic_vector(4 downto 0);
+	 --signal rs, rt: std_logic_vector(4 downto 0);
 begin
 	-- Break up instruction into parts
 	
-	rs <= insn(25 downto 21);		-- R and I type
-	rt <= insn(20 downto 16);		-- R and I type
-	rf_ra1_out <= rt;
-	rf_ra2_out <= rs;
+	rf_ra1_out <= insn(20 downto 16);
+	rf_ra2_out <= insn(25 downto 21);
 	rsOut <= rf_data2;
 	rtOut <= rf_data1;
+	
+	process
+	  begin
+	 wait until rising_edge(clk);
+	 	insnOut <= insn;
+	  	pcOut <= pc;
+	 end process;
 	
 	-- Select correct instruction parts
 	process(pc) 
@@ -50,7 +55,7 @@ begin
 	    variable rt_line : string(1 to 5);		
 	    
 	    variable opcode, funct	: std_logic_vector(5 downto 0);
-	    variable rd, shamt: std_logic_vector(4 downto 0);
+	    variable rs,rt,rd, shamt: std_logic_vector(4 downto 0);
 	    variable immediate		: std_logic_vector(15 downto 0);
 	    variable target			: std_logic_vector(25 downto 0);
 	    variable jumpTarget : std_logic_vector(31 downto 0);
@@ -62,16 +67,17 @@ begin
 	    
 	begin
 	  
-	  insnOut <= insn;
-	  pcOut <= pc;
-	                hwrite( my_line , pc);
-                  write( my_line, string'(" : "));
-                  hwrite( my_line, insn);
-                  write( my_line, string'("    "));
-                 -- writeline(output, my_line);
+	  write( my_line, string'("D: "));
+	  hwrite( my_line , pc);
+      write( my_line, string'(" : "));
+      hwrite( my_line, insn);
+      write( my_line, string'("    "));
+      -- writeline(output, my_line);
                  
    	   opcode := insn(31 downto 26);	-- For all instruction types
 	  
+	   rs := insn(25 downto 21);		-- R and I type
+	   rt := insn(20 downto 16);		-- R and I type
 	   rd := insn(15 downto 11);		-- R type
 	   shamt := insn(10 downto 6);		-- R type
 	   funct := insn(5 downto 0);		-- R type

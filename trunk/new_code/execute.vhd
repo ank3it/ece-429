@@ -88,52 +88,34 @@ begin
   
     process(pc) 
     	variable my_line : line;  -- type 'line' comes from textio
+    	variable o : std_logic_vector( 31 downto 0);
       begin
       
-      	write( my_line, string'(" rs =  "));
-      	 hwrite( my_line, rs);
-      	write( my_line, string'(" rt =  "));
-      	 hwrite( my_line, rt);
+      	--write( my_line, string'(" rs =  "));
+      	-- hwrite( my_line, rs);
+      	--write( my_line, string'(" rt =  "));
+      	-- hwrite( my_line, rt);
         --wait until rising_edge(clk);
-        if  output_select_ctl = "001" then
-        	write( my_line, string'(" ALU "));
-            output1 <= alu_out;
-            branch_taken_out <= '0';  
-        elsif output_select_ctl = "011" then
-        	write( my_line, string'(" Logical "));
-            output1 <= logical_out;
-            branch_taken_out <= '0'; 
-        elsif output_select_ctl = "100" then
-        	write( my_line, string'(" slt "));
-            output1 <= slt_out;    
-            branch_taken_out <= '0'; 
-        elsif output_select_ctl = "010" then
-        	write( my_line, string'(" Shift "));
-            output1 <= shift_out;    
-            branch_taken_out <= '0';  
-        elsif output_select_ctl = "101" then
-        	write( my_line, string'(" Branch "));
-            output1 <= branch_addr_out;  
-            branch_taken_out <= '1'  ;
-        elsif  output_select_ctl = "110" then
-        	write( my_line, string'(" Jump "));
-            output1 <= jump_out;  
-            branch_taken_out <= '0'  ;   
-       else
-       		write( my_line, string'(" Others "));
-            output1(31 downto 0 ) <= ( 31 downto 0 => '0');  
-            branch_taken_out <= '0'  ;  
-      end if;  
-                  write( my_line, string'(" Execute "));
+                 -- write( my_line, string'(" Execute "));
+                  o := output1;
+                  write( my_line, string'("E: "));
                   hwrite( my_line, pc);
                   write( my_line, string'(" : "));
-                  hwrite( my_line, output1);
+                  hwrite( my_line, insn);
+     			  write( my_line, string'("    "));
+                  hwrite( my_line, o);
                   writeline(output, my_line);      
     end process;
         
   
   	output_exec <= output1;
-  	
+  	output1 <= alu_out when output_select_ctl = "001"
+			else logical_out when output_select_ctl = "011"
+			else slt_out when output_select_ctl = "100"
+			else shift_out when output_select_ctl = "010"
+			else branch_addr_out when  output_select_ctl = "101"
+			else jump_out when output_select_ctl = "110"
+			else (others => '0');
     imme_control <= controlSignal(0);
     sign_extended_control <= controlSignal(1);
     alu_signed_ctl <= controlSignal(2);
