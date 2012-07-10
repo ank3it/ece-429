@@ -403,6 +403,7 @@ begin
 			
             controlSignal(3) <= '0';  -- Set ALU op to add
 			controlSignal(19 downto 17) <= "111";	-- Set output selector
+			controlSignal( 25 downto 21 ) <= "11111";
 		elsif opcode = "000100" then		-- beq
 				write( my_line, string'("BEQ ") );
 				write( my_line, to_integer(unsigned(rs)));  

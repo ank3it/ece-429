@@ -161,6 +161,7 @@ architecture main of tb is
 			controlSignalOut => controlSignal_fromMem,
 			MemExecInput => output_fromExec,
 			MemExecOutput => execDataOut_fromMem2, 
+			finish => finish,
 			execDataOut => execDataOut_fromMem
 		);
 		
