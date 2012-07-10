@@ -109,42 +109,6 @@ begin
 	 end if;	
 	 end process;
 	 
-    process(pcPrint) 
-    	variable my_line : line;  -- type 'line' comes from textio
-      begin
-      
-      	--write( my_line, string'(" rs =  "));
-      	-- hwrite( my_line, rs);
-      	--write( my_line, string'(" rt =  "));
-      	-- hwrite( my_line, rt);
-        --wait until rising_edge(clk);
-                 -- write( my_line, string'(" Execute "));
-				
-				-- Print registers
-				--wait until rising_edge(clk);
-				write( my_line, string'("D: "));
-				hwrite( my_line , pc);
-				write( my_line, string'(" : REG[rs] = "));
-				write( my_line, to_integer(signed(rs)));
-				write( my_line, string'(" REG[rt] = "));
-				write( my_line, to_integer(signed(rt)));		
-				--writeline(output, my_line);
-				
-				-- Print execute output
-                write( my_line, string'("E:PC "));
-                hwrite( my_line, pcPrint);
-                write( my_line, string'(" INS: "));
-                hwrite( my_line, insnOut);
-     			write( my_line, string'(" DEC: "));
-                write( my_line, to_integer(signed(outPrint )));
-                write( my_line, string'(" HEX: "));
-                hwrite( my_line, output1);
-                write( my_line, string'(" BT: "));
-                write( my_line, (branch_taken_out));
-                --writeline(output, my_line);      
-    end process;
-        
- 
     pcOut_temp <= pc when finish = '1'
     		else rs when output_select_ctl = "000"  -- jr
     		else output1 when ( branch_taken_out = '1' AND output_select_ctl = "101" )-- branch insn
