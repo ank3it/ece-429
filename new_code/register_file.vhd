@@ -21,6 +21,7 @@ entity register_file is
 		write_address	: in std_logic_vector(addr_width - 1 downto 0);
 		write_enable 	: in std_logic;
 		data_in			: in std_logic_vector(data_width - 1 downto 0);
+		finish			: in std_logic;
 		data_out1 		: out std_logic_vector(data_width - 1 downto 0);
 		data_out2		: out std_logic_vector(data_width - 1 downto 0)
 	);
@@ -40,7 +41,9 @@ begin
 		variable my_line : line;  -- type 'line' comes from textio
 		variable num: unsigned( 4 downto 0);
 		variable load : std_logic := '0';
-	begin
+		variable print : std_logic := '1';
+		variable finish2 : std_logic := '1';
+	begin	
 		if ( load = '0' ) then
 		load := '1';
 		regfile(0) <=  "00000000000000000000000000000000";
@@ -75,8 +78,30 @@ begin
 		regfile(29) <=  "00000000000000000000010000011101";
 		regfile(30) <=  "00000000000000000000000000011110";
 		regfile(31) <=  "00000000000000000000000000011111";
+		
 		else
-			wait until falling_edge(clock);		
+			wait until falling_edge(clock);	
+
+			if print = '1' OR (finish = '1' AND finish2 = '1') then
+				print := '0';
+				
+				if finish = '1' then 
+					finish2 := '0';
+					write( my_line, string'("After Execution:") );
+				else
+					write( my_line, string'("Before Execution:") );
+				end if;
+				
+				writeline(output, my_line);
+				for i in 0 to 31 loop
+					write( my_line, string'("$") );
+					write( my_line, i );
+					write( my_line, string'(" = ") );
+					write( my_line , to_integer(signed(regfile(i))) );
+					writeline( output, my_line );
+				end loop;
+			end if;
+		
 			if write_enable = '1' then
 				regfile(to_integer(unsigned(write_address))) <= data_in;
 			end if;
