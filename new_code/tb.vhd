@@ -57,7 +57,7 @@ architecture main of tb is
 		signal mem2_dataOut			: std_logic_vector(31 downto 0);
    begin
 
-	rf_write_enable <= '0';
+	--rf_write_enable <= '0';
 	load : entity work.load(main)
 		port map(
 			clk => clock2,
