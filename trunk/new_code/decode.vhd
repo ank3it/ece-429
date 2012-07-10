@@ -39,8 +39,8 @@ begin
 	
 	rf_ra1_out <= insn(20 downto 16);
 	rf_ra2_out <= insn(25 downto 21);
-	rsOut <= rf_data2;
-	rtOut <= rf_data1;
+	rsOut <= pc when insn(31 downto 26) = "000011" else rf_data2;
+	rtOut <= "00000000000000000000000000010000" when insn(31 downto 26) = "000011" else rf_data1;
 	
 	process
 	  begin
@@ -114,7 +114,7 @@ begin
 	
 		-- NOP (manual pg 216) -- SLL r0
 		
-		controlSignal <= (others => '0');  -- Create any old control values
+		controlSignal <= (others => '0');  -- Clear any old control values
 
 	
     write( my_line, string'("    "));
@@ -392,6 +392,7 @@ begin
 			jumpTarget(27 downto 2) := target;
 			hwrite( my_line, jumpTarget );
 			
+            controlSignal(3) <= '0';  -- Set ALU op to add
 			controlSignal(19 downto 17) <= "111";	-- Set output selector
 		elsif opcode = "000100" then		-- beq
 				write( my_line, string'("BEQ ") );
