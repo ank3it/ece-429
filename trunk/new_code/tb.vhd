@@ -142,6 +142,7 @@ architecture main of tb is
 	mem2 : entity work.memory2(main)
 		port map (
 			ActualAddress => mem2_address,
+			reset	=> reset,
 			data => mem2_data,
 			clock => clock2,
 			writeEnable => mem2_writeReady,
