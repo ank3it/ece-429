@@ -102,6 +102,7 @@ architecture main of tb is
 			write_address => rf_write_address,
 			write_enable => rf_write_enable,
 			data_in => rf_data_in,
+			finish => finish,
 			
 			-- Outputs
 			data_out1 => rf_data_out1,
