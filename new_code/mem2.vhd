@@ -50,12 +50,18 @@ RW:process
 		MemExecOutput <= MemExecInput;
 		
 		-- Read/write memory
-        if writeEnable = '1' then
+        if writeEnable = '1' AND stall = '0' then
         	 if ( to_integer(unsigned(address)) >= 0 AND to_integer(unsigned(address)) < 8001 ) then
                 mem( to_integer(unsigned(address)) ) <= data(31 downto 24) ;
                 mem( to_integer(unsigned(address)+1) ) <= data(23 downto 16) ;
                 mem( to_integer(unsigned(address)+2) ) <= data(15 downto 8) ;
                 mem( to_integer(unsigned(address)+3) ) <= data(7 downto 0) ;
+                write( my_line, string'("Mem "));
+				write( my_line, string'(" Addr "));
+				write( my_line, to_integer(signed(address)));
+				write( my_line, string'(" Data "));
+				write( my_line, to_integer(signed(data)));		
+				writeline(output, my_line);
              end if;   
         else
               if ( to_integer(signed(address)) >= 0 AND to_integer(unsigned(address)) < 8001 ) then

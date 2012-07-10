@@ -21,6 +21,7 @@ entity decode is
 		insnOut		: out std_logic_vector(31 downto 0);
 		pcOut		: out std_logic_vector(31 downto 0);
 		controlSignal2 : out std_logic_vector(27 downto 0);
+		stall_out   : out std_logic;
 		
 		-- Reg file signals
 		rf_ra1_out		: out std_logic_vector(4 downto 0);
@@ -45,11 +46,14 @@ begin
 	process
 	  begin
 	 wait until rising_edge(clk);
-	 	insnOut <= insn;
+	 if ( stall = '0' ) then
+	  	insnOut <= insn;
 	  	pcOut <= pc;
 	  	controlSignal2 <= controlSignal;
 	  	rsOut2 <= rsOut;
 	  	rtOut2 <= rtOut;
+	  end if;	
+	  	  	stall_out <= stall;
 	 end process;
 	
 	-- Select correct instruction parts
@@ -438,7 +442,7 @@ begin
 				controlSignal(4) <= '0';  -- Left shift
 				controlSignal(5) <= '0';  -- Logical shift
 				controlSignal(16 downto 12) <= "00010"; -- shift amount = 2
-				controlSignal(8 downto 6) <= "101";  -- Set branch control bits
+				controlSignal(8 downto 6) <= "011";  -- Set branch control bits
 				controlSignal(19 downto 17) <= "101";  -- Set output selector
 				controlSignal(27) <= '1';	-- Disable writeback stage
 		elsif opcode = "000110" then		-- blez

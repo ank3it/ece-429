@@ -36,7 +36,7 @@ architecture main of execute is
     signal alu_op_ctl : std_logic; -- 0 ADD, 1 SUB
     signal shift_dir_ctl : std_logic; -- 0 LEFT, 1 RIGHT
     signal shift_sign_ctl : std_logic; -- 0 UNSIGNED, 1 SIGNED
-    signal branch_ctl : std_logic_vector( 2 downto 0 ); -- 100 beq, 101 bgez, 111 BGTZ , 110 BLEZ , 001 BLTZ, 101 BNE, else 0 
+    signal branch_ctl : std_logic_vector( 2 downto 0 ); -- 100 beq, 101 bgez, 111 BGTZ , 110 BLEZ , 001 BLTZ, 011 BNE, else 0 
     signal logical_op_ctl : std_logic_vector( 1 downto 0); -- 00 AND, 01 OR , 10 XOR, 11 NOR -- last 2 bits of instr
     signal slt_ctl : std_logic ; -- 1 SLT, 0 SLTU .. for SLTI, use SLT but with imme_control and sign_extended_control set
     signal shift_amt_ctl : std_logic_vector( 4 downto 0 );
@@ -96,15 +96,17 @@ begin
   	process
 	  begin
 	 wait until rising_edge(clk);
-	 	 insnOut <= insn;
+	 		stallOut <= stall;
+	 if ( stall = '0' ) then
+	 	insnOut <= insn;
 	  	pcPrint <= pc;
 	  	pcOut <= pcOut_temp;
 	  	output_exec <= output1;
 	  	output_branch_taken <= branch_taken_out;
 		controlSignalOut <= controlSignal(27 downto 20);
-		stallOut <= stall;
 		rtOut <= rt;
 		outPrint <= output1;
+	 end if;	
 	 end process;
 	 
     process(pcPrint) 
@@ -226,7 +228,7 @@ begin
                   else   bt_BGTZ when (branch_ctl = "111" AND output_select_ctl = "101")
                   else   bt_BLEZ when (branch_ctl = "110" AND output_select_ctl = "101")
                   else   bt_BLTZ when (branch_ctl = "001" AND output_select_ctl = "101")
-                  else   bt_BNE when  (branch_ctl = "101" AND output_select_ctl = "101")
+                  else   bt_BNE when  (branch_ctl = "011" AND output_select_ctl = "101")
                   else   '1'    when ( output_select_ctl = "110" OR output_select_ctl = "111") -- for jump and JAL
                   else   '0';
       
