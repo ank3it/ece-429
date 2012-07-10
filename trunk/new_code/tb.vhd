@@ -12,7 +12,7 @@ end tb;
 architecture main of tb is
 		signal clock2 		:  std_logic;
 		signal reset 		:  std_logic;
-		constant period  	: time := 20 us;
+		constant period  	: time := 20 ns;
 		signal addr_load  	: std_logic_vector(31 downto 0);
 		signal address     : std_logic_vector(31 downto 0);
 		signal addr_fetch 	: std_logic_vector(31 downto 0);
@@ -55,6 +55,7 @@ architecture main of tb is
 		signal mem2_data			: std_logic_vector(31 downto 0);
 		signal mem2_writeReady		: std_logic;
 		signal mem2_dataOut			: std_logic_vector(31 downto 0);
+		signal execDataOut_fromMem2 : std_logic_vector(31 downto 0);
    begin
 
 	--rf_write_enable <= '0';
@@ -151,6 +152,8 @@ architecture main of tb is
 			dataOut => mem2_dataOut,
 			stallOut => stall_fromMem,
 			controlSignalOut => controlSignal_fromMem,
+			MemExecInput => output_fromExec,
+			MemExecOutput => execDataOut_fromMem2, 
 			execDataOut => execDataOut_fromMem
 		);
 		
@@ -159,7 +162,7 @@ architecture main of tb is
 			clk => clock2,
 			i_stall => stall_fromMem,
 			i_control_signal => controlSignal_fromMem,
-			i_execute_output => execDataOut_fromMem,
+			i_execute_output =>  execDataOut_fromMem2,
 			i_memory_output => mem2_dataOut,
 			o_write_enable => rf_write_enable,
 			o_write_address => rf_write_address,

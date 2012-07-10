@@ -25,6 +25,8 @@ entity memory2 is
                 dataOut 		: out std_logic_vector(dataOut_width - 1 downto 0);
 				stallOut		: out std_logic;
 				controlSignalOut: out std_logic_vector(6 downto 0);
+				MemExecInput	: in std_logic_vector(dataOut_width - 1 downto 0);
+				MemExecOutput	: out std_logic_vector(dataOut_width - 1 downto 0);
 				execDataOut		: out std_logic_vector(dataOut_width -1 downto 0)
         );
 end memory2 ;
@@ -34,6 +36,7 @@ architecture main of memory2 is
         type total_mem is array ( 0 to memSize -1) of std_logic_vector(data_width - 1 downto 0);
         signal mem : total_mem ;
         signal address :  std_logic_vector(addr_width - 1 downto 0);
+        signal address2 :  std_logic_vector(addr_width - 1 downto 0);
 begin
 
 RW:process
@@ -44,6 +47,7 @@ RW:process
 		controlSignalOut <= controlSignal(7 downto 1);
 		stallOut <= stall;
 		execDataOut <= data;
+		MemExecOutput <= MemExecInput;
 		
 		-- Read/write memory
         if writeEnable = '1' then
@@ -54,13 +58,15 @@ RW:process
                 mem( to_integer(unsigned(address)+3) ) <= data(7 downto 0) ;
              end if;   
         else
-              if ( to_integer(unsigned(address)) >= 0 AND to_integer(unsigned(address)) < 8001 ) then
+              if ( to_integer(signed(address)) >= 0 AND to_integer(unsigned(address)) < 8001 ) then
                 dataOut <= mem( to_integer(unsigned(address)) ) & mem( to_integer(unsigned(address) + 1)) & mem( to_integer(unsigned(address)  + 2) ) & mem( to_integer(unsigned(address)  + 3));
             else
                 dataOut <= x"00000000";
             end if;
         end if;
   end process;
-address <= std_logic_vector(unsigned(unsigned(Actualaddress) - MemStart)) when reset = '1' else Actualaddress;
+address <= address2 when (to_integer(signed(address2)) >= 0 AND to_integer(unsigned(address2)) < 8001)
+			else x"00001F40"; -- 8000 in dec
+address2 <= std_logic_vector(unsigned(unsigned(Actualaddress) - MemStart)) when reset = '1' else Actualaddress ;
 
 end main;

@@ -52,7 +52,8 @@ architecture main of execute is
     --signal shift_lt_4 : std_logic_vector(31 downto 0);
     --signal shift_lt_2 : std_logic_vector(31 downto 0);
     --signal shift_lt_1 : std_logic_vector(31 downto 0);
-    
+   
+    signal outPrint : std_logic_vector( 31 downto 0);
     signal pcPrint : std_logic_vector( 31 downto 0);
     signal pcOut_temp : std_logic_vector( 31 downto 0);
     signal insnOut: std_logic_vector( 31 downto 0);
@@ -102,9 +103,10 @@ begin
 		controlSignalOut <= controlSignal(27 downto 20);
 		stallOut <= stall;
 		rtOut <= rt;
+		outPrint <= output1;
 	 end process;
 	 
-    process(pc) 
+    process(pcPrint) 
     	variable my_line : line;  -- type 'line' comes from textio
       begin
       
@@ -116,12 +118,13 @@ begin
                  -- write( my_line, string'(" Execute "));
 				
 				-- Print registers
+				--wait until rising_edge(clk);
 				write( my_line, string'("D: "));
 				hwrite( my_line , pc);
 				write( my_line, string'(" : REG[rs] = "));
-				write( my_line, to_integer(unsigned(rs)));
+				write( my_line, to_integer(signed(rs)));
 				write( my_line, string'(" REG[rt] = "));
-				write( my_line, to_integer(unsigned(rt)));		
+				write( my_line, to_integer(signed(rt)));		
 				writeline(output, my_line);
 				
 				-- Print execute output
@@ -130,7 +133,7 @@ begin
                 write( my_line, string'(" INS: "));
                 hwrite( my_line, insnOut);
      			write( my_line, string'(" DEC: "));
-                write( my_line, to_integer(signed(output1)));
+                write( my_line, to_integer(signed(outPrint )));
                 write( my_line, string'(" HEX: "));
                 hwrite( my_line, output1);
                 write( my_line, string'(" BT: "));
