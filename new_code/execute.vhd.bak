@@ -4,6 +4,8 @@
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
+use std.textio.all;
+use IEEE.std_logic_textio.all;          -- I/O for logic types
 
 entity execute is
 	port (
@@ -18,8 +20,9 @@ entity execute is
 	--destreg  : in std_logic_vector( 4 downto 0);
 	
 	-- Outputs
-	output			: out std_logic_vector(31 downto 0);
-	output_branch_taken   : out std_logic
+	output_exec			: out std_logic_vector(31 downto 0);
+	output_branch_taken   : out std_logic;
+	pcout : out std_logic_vector( 31 downto 0)
 	);
 end execute;
 
@@ -47,7 +50,8 @@ architecture main of execute is
     --signal shift_lt_4 : std_logic_vector(31 downto 0);
     --signal shift_lt_2 : std_logic_vector(31 downto 0);
     --signal shift_lt_1 : std_logic_vector(31 downto 0);
-    
+
+    signal insnOut: std_logic_vector( 31 downto 0);
     signal slt_s : std_logic;
     signal slt_u : std_logic;
     signal pcplus4 : std_logic_vector( 31 downto 0 );
@@ -79,37 +83,64 @@ architecture main of execute is
     signal jump_out : std_logic_vector( 31 downto 0 );
     signal shift_out : std_logic_vector( 31 downto 0);
     signal alu_out : std_logic_vector( 31 downto 0);
+    
+    signal output1 : std_logic_vector( 31 downto 0);
   --signal aluout
 begin
   
-    process
+  	process
+	  begin
+	 wait until rising_edge(clk);
+	 	 insnOut <= insn;
+	  	pcOut <= pc;
+	  	output_exec <= output1;
+	  	output_branch_taken <= branch_taken_out;
+	 end process;
+	 
+    process(pc) 
+    	variable my_line : line;  -- type 'line' comes from textio
       begin
-        wait until rising_edge(clk);
-        if  output_select_ctl = "001" then
-            output <= alu_out;
-            branch_taken_out <= '0';  
-        elsif output_select_ctl = "011" then
-            output <= logical_out;
-            branch_taken_out <= '0'; 
-        elsif output_select_ctl = "100" then
-            output <= slt_out;    
-            branch_taken_out <= '0'; 
-        elsif output_select_ctl = "010" then
-            output <= shift_out;    
-            branch_taken_out <= '0';  
-        elsif output_select_ctl = "101" then
-            output <= branch_addr_out;  
-            branch_taken_out <= '1'  ;
-        elsif  output_select_ctl = "110" then
-            output <= jump_out;  
-            branch_taken_out <= '0'  ;   
-       else
-            output <= "0";  
-            branch_taken_out <= '0'  ;  
-      end if;             
+      
+      	--write( my_line, string'(" rs =  "));
+      	-- hwrite( my_line, rs);
+      	--write( my_line, string'(" rt =  "));
+      	-- hwrite( my_line, rt);
+        --wait until rising_edge(clk);
+                 -- write( my_line, string'(" Execute "));
+				
+				-- Print registers
+				write( my_line, string'("D: "));
+				hwrite( my_line , pc);
+				write( my_line, string'(" : REG[rs] = "));
+				write( my_line, to_integer(unsigned(rs)));
+				write( my_line, string'(" REG[rt] = "));
+				write( my_line, to_integer(unsigned(rt)));		
+				writeline(output, my_line);
+				
+				-- Print execute output
+                write( my_line, string'("E:PC "));
+                hwrite( my_line, pcOut);
+                write( my_line, string'(" INS: "));
+                hwrite( my_line, insnOut);
+     			write( my_line, string'(" DEC: "));
+                write( my_line, to_integer(signed(output1)));
+                write( my_line, string'(" HEX: "));
+                hwrite( my_line, output1);
+                write( my_line, string'(" BT: "));
+                write( my_line, (branch_taken_out));
+                writeline(output, my_line);      
     end process;
         
-  
+ 
+   pcout <=  output1 when branch_taken_out = '1'
+           else pcplus4;
+  	output1 <= alu_out when output_select_ctl = "001"
+			else logical_out when output_select_ctl = "011"
+			else slt_out when output_select_ctl = "100"
+			else shift_out when output_select_ctl = "010"
+			else branch_addr_out when  output_select_ctl = "101"
+			else jump_out when output_select_ctl = "110"
+			else (others => '0');		
     imme_control <= controlSignal(0);
     sign_extended_control <= controlSignal(1);
     alu_signed_ctl <= controlSignal(2);
@@ -161,8 +192,8 @@ begin
             else   (std_logic_vector(alu_sr1) XOR std_logic_vector(alu_sr2)) when logical_op_ctl = "10"
             else   (std_logic_vector(alu_sr1) NOR std_logic_vector(alu_sr2));  
     
-     slt_s <= '1' when ( signed(rs) < signed(rt) ) else '0';
-     slt_u <= '1' when ( unsigned(rs) < unsigned(rt) ) else '0';
+     slt_s <= '1' when ( signed(alu_sr1) < signed(alu_sr2) ) else '0';
+     slt_u <= '1' when ( unsigned(alu_sr1) < unsigned(alu_sr2) ) else '0';
      slt_out( 31 downto 1 ) <= ( 31 downto 1 => '0' );
      slt_out(0) <= slt_s when slt_ctl = '1' else '0';
      
@@ -174,12 +205,13 @@ begin
      bt_BNE <= '0' when (rs = rt ) else '1';
      
      branch_addr_out <= std_logic_vector(unsigned(pcplus4)+ unsigned(signed(sign_extended) sll 2));   
-     branch_taken_out <= bt_BEQ when branch_ctl = "100"
-                  else   bt_BGEZ when branch_ctl = "101"
-                  else   bt_BGTZ when branch_ctl = "111"
-                  else   bt_BLEZ when branch_ctl = "110"
-                  else   bt_BLTZ when branch_ctl = "001"
-                  else   bt_BNE when branch_ctl = "101"  
+     branch_taken_out <= bt_BEQ when  (branch_ctl = "100" AND output_select_ctl = "101")
+                  else   bt_BGEZ when (branch_ctl = "101" AND output_select_ctl = "101")
+                  else   bt_BGTZ when (branch_ctl = "111" AND output_select_ctl = "101")
+                  else   bt_BLEZ when (branch_ctl = "110" AND output_select_ctl = "101")
+                  else   bt_BLTZ when (branch_ctl = "001" AND output_select_ctl = "101")
+                  else   bt_BNE when  (branch_ctl = "101" AND output_select_ctl = "101")
+                  else   '1'    when output_select_ctl = "110" -- for jump
                   else   '0';
                       
      

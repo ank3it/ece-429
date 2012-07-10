@@ -23,6 +23,7 @@ entity execute is
 	output_exec			: out std_logic_vector(31 downto 0);
 	output_branch_taken	: out std_logic;
 	controlSignalOut	: out std_logic_vector(7 downto 0);
+	pcout 				: out std_logic_vector( 31 downto 0);
 	stallOut			: out std_logic;
 	rtOut				: out std_logic_vector(31 downto 0)
 	);
@@ -53,7 +54,8 @@ architecture main of execute is
     --signal shift_lt_2 : std_logic_vector(31 downto 0);
     --signal shift_lt_1 : std_logic_vector(31 downto 0);
     
-    signal pcOut : std_logic_vector( 31 downto 0);
+    signal pcPrint : std_logic_vector( 31 downto 0);
+    signal pcOut_temp : std_logic_vector( 31 downto 0);
     signal insnOut: std_logic_vector( 31 downto 0);
     signal slt_s : std_logic;
     signal slt_u : std_logic;
@@ -93,8 +95,9 @@ begin
   	process
 	  begin
 	 wait until rising_edge(clk);
-	 	insnOut <= insn;
-	  	pcOut <= pc;
+	 	 insnOut <= insn;
+	  	pcPrint <= pc;
+	  	pcOut <= pcOut_temp;
 	  	output_exec <= output1;
 	  	output_branch_taken <= branch_taken_out;
 		controlSignalOut <= controlSignal(27 downto 20);
@@ -124,7 +127,7 @@ begin
 				
 				-- Print execute output
                 write( my_line, string'("E:PC "));
-                hwrite( my_line, pcOut);
+                hwrite( my_line, pcPrint);
                 write( my_line, string'(" INS: "));
                 hwrite( my_line, insnOut);
      			write( my_line, string'(" DEC: "));
@@ -136,7 +139,9 @@ begin
                 writeline(output, my_line);      
     end process;
         
-  
+ 
+   pcOut_temp <=  output1 when branch_taken_out = '1'
+           else pcplus4;
   	output1 <= alu_out when output_select_ctl = "001"
 			else logical_out when output_select_ctl = "011"
 			else slt_out when output_select_ctl = "100"
@@ -214,7 +219,11 @@ begin
                   else   bt_BLEZ when (branch_ctl = "110" AND output_select_ctl = "101")
                   else   bt_BLTZ when (branch_ctl = "001" AND output_select_ctl = "101")
                   else   bt_BNE when  (branch_ctl = "101" AND output_select_ctl = "101")
+                  else   '1'    when output_select_ctl = "110" -- for jump
                   else   '0';
+                  
+    pcOut_temp <=  output1 when branch_taken_out = '1'
+           else pcplus4;              
                       
      
      
