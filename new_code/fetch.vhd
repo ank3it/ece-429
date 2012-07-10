@@ -48,6 +48,8 @@ architecture main of fetch is
                   wait until rising_edge(clk);
                   wait until rising_edge(clk);
                   wait until rising_edge(clk);
+                  wait until rising_edge(clk);
+                  wait until rising_edge(clk);
                   if stall = '0' then
                     addr_fetch <= pcIn;
                   end if;

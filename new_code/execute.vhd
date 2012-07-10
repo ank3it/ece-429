@@ -17,7 +17,6 @@ entity execute is
 	controlSignal	: in std_logic_vector(27 downto 0);
 	rs       : in std_logic_vector(31 downto 0);
 	rt       : in std_logic_vector(31 downto 0);
-	--destreg  : in std_logic_vector( 4 downto 0);
 	
 	-- Outputs
 	output_exec			: out std_logic_vector(31 downto 0);
@@ -140,15 +139,18 @@ begin
     end process;
         
  
-   pcOut_temp <=  output1 when branch_taken_out = '1'
+    pcOut_temp <= rs when output_select_ctl = "000"  -- jr
+    		else jump_out when ( output_select_ctl = "110" OR output_select_ctl = "111") -- for jump and JAL
+    		else output1 when ( branch_taken_out = '1' AND output_select_ctl = "101" )-- branch insn
            else pcplus4;
-  	output1 <= alu_out when output_select_ctl = "001"
+           
+  	output1 <= alu_out when ( output_select_ctl = "001" OR output_select_ctl = "111") 
 			else logical_out when output_select_ctl = "011"
 			else slt_out when output_select_ctl = "100"
 			else shift_out when output_select_ctl = "010"
 			else branch_addr_out when  output_select_ctl = "101"
-			else jump_out when output_select_ctl = "110"
-			else (others => '0');		
+			else (others => '0');
+					
     imme_control <= controlSignal(0);
     sign_extended_control <= controlSignal(1);
     alu_signed_ctl <= controlSignal(2);
@@ -219,7 +221,7 @@ begin
                   else   bt_BLEZ when (branch_ctl = "110" AND output_select_ctl = "101")
                   else   bt_BLTZ when (branch_ctl = "001" AND output_select_ctl = "101")
                   else   bt_BNE when  (branch_ctl = "101" AND output_select_ctl = "101")
-                  else   '1'    when output_select_ctl = "110" -- for jump
+                  else   '1'    when ( output_select_ctl = "110" OR output_select_ctl = "111") -- for jump and JAL
                   else   '0';
                   
     pcOut_temp <=  output1 when branch_taken_out = '1'
