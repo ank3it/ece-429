@@ -43,7 +43,7 @@ RW:process
               if ( to_integer(unsigned(address)) < 8001 ) then
                 dataOut <= mem( to_integer(unsigned(address)) ) & mem( to_integer(unsigned(address) + 1)) & mem( to_integer(unsigned(address)  + 2) ) & mem( to_integer(unsigned(address)  + 3));
             else
-                dataOut <= x"0";
+                dataOut <= x"00000000";
             end if;
         end if;
   end process;

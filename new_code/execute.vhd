@@ -140,9 +140,10 @@ begin
         
  
     pcOut_temp <= rs when output_select_ctl = "000"  -- jr
-    		else jump_out when ( output_select_ctl = "110" OR output_select_ctl = "111") -- for jump and JAL
     		else output1 when ( branch_taken_out = '1' AND output_select_ctl = "101" )-- branch insn
-           else pcplus4;
+    		else jump_out when ( output_select_ctl = "110") -- for jump
+    		else jump_out when ( output_select_ctl = "111") -- for JAL
+            else pcplus4;
            
   	output1 <= alu_out when ( output_select_ctl = "001" OR output_select_ctl = "111") 
 			else logical_out when output_select_ctl = "011"
@@ -164,8 +165,8 @@ begin
     output_select_ctl <= controlSignal(19 downto 17);
   
     pcplus4 <= std_logic_vector(unsigned(pc) + 4);
-    jump_out( 1 downto 0) <= (1 downto 0 => '0');
-    jump_out( 27 downto 2) <= insn(25 downto 0);
+    jump_out( 1 downto 0) <= (1 downto 0 => '0') ;
+    jump_out( 27 downto 2) <= insn(25 downto 0)  ;
     jump_out( 31 downto 28 ) <= pcplus4 ( 31 downto 28 ); 
     
     shift_sign <= rt(15) when (( shift_sign_ctl AND shift_dir_ctl) = '1') else '0';
@@ -223,10 +224,6 @@ begin
                   else   bt_BNE when  (branch_ctl = "101" AND output_select_ctl = "101")
                   else   '1'    when ( output_select_ctl = "110" OR output_select_ctl = "111") -- for jump and JAL
                   else   '0';
-                  
-    pcOut_temp <=  output1 when branch_taken_out = '1'
-           else pcplus4;              
-                      
-     
-     
+      
+                        
 end main;

@@ -17,6 +17,7 @@ entity memory2 is
         port (
                 Actualaddress 	: in std_logic_vector(addr_width - 1 downto 0);
                 data 			: in std_logic_vector(dataOut_width - 1 downto 0);
+                reset 			: in std_logic;
                 clock 			: in std_logic;
                 writeEnable 	: in std_logic;
 				stall			: in std_logic;
@@ -51,13 +52,13 @@ RW:process
                 mem( to_integer(unsigned(address)+2) ) <= data(15 downto 8) ;
                 mem( to_integer(unsigned(address)+3) ) <= data(7 downto 0) ;
         else
-              if ( to_integer(unsigned(address)) < 8001 ) then
+              if ( to_integer(unsigned(address)) >= 0 AND to_integer(unsigned(address)) < 8001 ) then
                 dataOut <= mem( to_integer(unsigned(address)) ) & mem( to_integer(unsigned(address) + 1)) & mem( to_integer(unsigned(address)  + 2) ) & mem( to_integer(unsigned(address)  + 3));
             else
-                dataOut <= x"0";
+                dataOut <= x"00000000";
             end if;
         end if;
   end process;
-address <= std_logic_vector(unsigned(unsigned(Actualaddress) - MemStart)) ;
+address <= std_logic_vector(unsigned(unsigned(Actualaddress) - MemStart)) when reset = '1' else Actualaddress;
 
 end main;
