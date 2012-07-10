@@ -47,10 +47,12 @@ RW:process
 		
 		-- Read/write memory
         if writeEnable = '1' then
+        	 if ( to_integer(unsigned(address)) >= 0 AND to_integer(unsigned(address)) < 8001 ) then
                 mem( to_integer(unsigned(address)) ) <= data(31 downto 24) ;
                 mem( to_integer(unsigned(address)+1) ) <= data(23 downto 16) ;
                 mem( to_integer(unsigned(address)+2) ) <= data(15 downto 8) ;
                 mem( to_integer(unsigned(address)+3) ) <= data(7 downto 0) ;
+             end if;   
         else
               if ( to_integer(unsigned(address)) >= 0 AND to_integer(unsigned(address)) < 8001 ) then
                 dataOut <= mem( to_integer(unsigned(address)) ) & mem( to_integer(unsigned(address) + 1)) & mem( to_integer(unsigned(address)  + 2) ) & mem( to_integer(unsigned(address)  + 3));
