@@ -27,6 +27,7 @@ entity memory2 is
 				controlSignalOut: out std_logic_vector(6 downto 0);
 				MemExecInput	: in std_logic_vector(dataOut_width - 1 downto 0);
 				MemExecOutput	: out std_logic_vector(dataOut_width - 1 downto 0);
+				finish			: in std_logic;
 				execDataOut		: out std_logic_vector(dataOut_width -1 downto 0)
         );
 end memory2 ;
@@ -40,7 +41,10 @@ architecture main of memory2 is
 begin
 
 RW:process
- variable my_line : line;  -- type 'line' comes from textio
+ 	variable my_line : line;  -- type 'line' comes from textio
+ 	variable finish2 : std_logic := '1';
+ 	variable print_cont : std_logic_vector(31 downto 0);
+ 	variable i : integer := 1;
  begin
         wait until rising_edge(clock);
 		-- Forward some signals
@@ -48,6 +52,21 @@ RW:process
 		stallOut <= stall;
 		execDataOut <= data;
 		MemExecOutput <= MemExecInput;
+		
+		if (finish = '1' AND finish2 = '1') then
+				finish2 := '0';
+				writeline(output, my_line);
+				i := 1013;
+				while ( i < 1079 ) loop
+					print_cont := mem( i ) & mem( i + 1) & mem( i + 2) & mem( i + 3);
+					write( my_line, string'("$") );
+					write( my_line, i );
+					write( my_line, string'(" = ") );
+					write( my_line , to_integer(signed(print_cont)));
+					writeline( output, my_line );
+					i := i+4;
+				end loop;
+			end if;
 		
 		-- Read/write memory
         if writeEnable = '1' AND stall = '0' then
