@@ -30,12 +30,24 @@ architecture main of writeback is
 	signal wb_select		: std_logic;
 	signal wb_disable		: std_logic;
 	signal write_enable		: std_logic;
+	signal check_we			: std_logic;
 begin
 
 process
 	begin
 		wait until rising_edge(clk);
-		o_write_enable <= write_enable;
+		if ( check_we = '1' ) then
+			o_write_enable <= '0';
+			check_we <= '0';
+			wait until rising_edge(clk);
+			wait until rising_edge(clk);
+			wait until rising_edge(clk);
+			wait until rising_edge(clk);
+			wait until rising_edge(clk);
+		else
+			o_write_enable <= write_enable;
+			check_we <= write_enable;
+		end if;		
 		o_write_address <= write_address;
 		o_data <= data;
 	end process;
