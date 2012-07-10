@@ -41,6 +41,7 @@ architecture main of tb is
 		signal execDataOut_fromMem		: std_logic_vector(31 downto 0);
 		signal rt_fromExec				: std_logic_vector(31 downto 0);
 		signal pcFromFetch				: std_logic_vector(31 downto 0);
+		signal stall_fromDecode			: std_logic;
 		
 		-- Signals for register file
 		signal rf_read_address1		: std_logic_vector(4 downto 0);
@@ -118,6 +119,7 @@ architecture main of tb is
 			insnOut		=> insnOut,
 			pcOut		=> pcOut,
 			controlSignal2 => controlSignal,
+			stall_out => stall_fromDecode,
 			
 
 			rf_ra1_out => rf_read_address1,
@@ -132,7 +134,7 @@ architecture main of tb is
 			insn => insnOut,
 			pc => pcOut,
 			pcOut => pcFromFetch,
-			stall => stall,
+			stall => stall_fromDecode,
 			controlSignal		=> controlSignal,
 			finish => finish,
 			rs		=> rsOut,

@@ -36,18 +36,11 @@ begin
 process
 	begin
 		wait until rising_edge(clk);
-		if ( check_we = '1' ) then
-			o_write_enable <= '0';
-			check_we <= '0';
-			wait until rising_edge(clk);
-			wait until rising_edge(clk);
-			wait until rising_edge(clk);
-			wait until rising_edge(clk);
-			wait until rising_edge(clk);
-		else
+		if ( i_stall = '0' ) then
 			o_write_enable <= write_enable;
-			check_we <= write_enable;
-		end if;		
+		else
+			o_write_enable <= '0';	
+		end if;	
 		o_write_address <= write_address;
 		o_data <= data;
 	end process;

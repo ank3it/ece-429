@@ -22,7 +22,7 @@ entity fetch is
                 pc      : out std_logic_vector(31 downto 0);
                 rw      : out std_logic;
      --           stall_out : out std_logic;
-                stall   : in std_logic;     
+                stall   : out std_logic;     
                 finish : out std_logic             
         );
         
@@ -42,21 +42,22 @@ architecture main of fetch is
         wait until rising_edge(clk);
         if reset = '0' then
               addressword := x"80020000";
-              if stall = '0' then
+              --if stall = '0' then
                 addr_fetch <= std_logic_vector(addressword);
-              end if;
-                wait until rising_edge(clk);
+              --end if;
                 while (counter /= 0) loop
+                  wait until rising_edge(clk);
+                  stall <= '0';
                   pc_fetch <= addr_fetch;
                   wait until rising_edge(clk);
+                  stall <= '1';
                   wait until rising_edge(clk);
                   wait until rising_edge(clk);
                   wait until rising_edge(clk);
                   wait until rising_edge(clk);
-                  if stall = '0' then
-                    addr_fetch <= pcIn;
-                  end if;
-                  wait until rising_edge(clk);
+                --  if stall = '0' then
+                --  end if;
+                  addr_fetch <= pcIn;
                   if ( finish2 = '1' ) then
                    counter := 0;
                   end if; 
