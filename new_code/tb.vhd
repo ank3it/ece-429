@@ -23,6 +23,7 @@ architecture main of tb is
 		signal writeReady_load  : std_logic;
 		signal writeReady_fetch  : std_logic;
 		signal dataOut  	: std_logic_vector(31 downto 0);
+		signal finish		: std_logic;
 		--signal address2  	: std_logic_vector(31 downto 0);
 		signal pc : std_logic_vector(31 downto 0);
 		signal stall : std_logic;
@@ -78,6 +79,7 @@ architecture main of tb is
 			rw => writeReady_fetch,
 			pc => pc,
 			pcIn => pcFromFetch,
+			finish => finish,
 			stall => stall
 		);
       
@@ -116,6 +118,7 @@ architecture main of tb is
 			insnOut		=> insnOut,
 			pcOut		=> pcOut,
 			controlSignal2 => controlSignal,
+			
 
 			rf_ra1_out => rf_read_address1,
 			rf_ra2_out => rf_read_address2,
@@ -131,6 +134,7 @@ architecture main of tb is
 			pcOut => pcFromFetch,
 			stall => stall,
 			controlSignal		=> controlSignal,
+			finish => finish,
 			rs		=> rsOut,
 			rt		=> rtOut,
 			output_exec => output_fromExec,
