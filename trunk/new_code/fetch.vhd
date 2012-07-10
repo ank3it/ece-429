@@ -22,7 +22,8 @@ entity fetch is
                 pc      : out std_logic_vector(31 downto 0);
                 rw      : out std_logic;
      --           stall_out : out std_logic;
-                stall   : in std_logic                  
+                stall   : in std_logic;     
+                finish : out std_logic             
         );
         
 end fetch;
@@ -30,11 +31,13 @@ end fetch;
 architecture main of fetch is
       signal addr_fetch : std_logic_vector(31 downto 0);
       signal pc_fetch : std_logic_vector(31 downto 0);
+      signal finish2 : std_logic;
    begin
      fetch2:process
         variable my_line : line;  -- type 'line' comes from textio
         variable addressword : unsigned(31 downto 0) := x"00000000";
         variable counter : integer := 30;
+        
       begin
         wait until rising_edge(clk);
         if reset = '0' then
@@ -54,11 +57,31 @@ architecture main of fetch is
                     addr_fetch <= pcIn;
                   end if;
                   wait until rising_edge(clk);
-                  --counter := counter - 1;
+                  if ( finish2 = '1' ) then
+                   counter := 0;
+                  end if; 
               end loop;
               wait;
         end if;
       end process;
+      
+      process( pcIn)
+      	variable counter_nops : integer := 15;
+		begin
+        if ( insn /= x"00000000" ) then
+			counter_nops := 15;
+		else
+			counter_nops := counter_nops - 1;
+		end if;
+		if ( counter_nops <= 0 ) then
+			finish2 <= '1';
+		else
+			finish2 <= '0';
+		end if;
+	 end process;			
+				
+			finish <= finish2;		
+		      
           
         
       address <= addr_fetch;

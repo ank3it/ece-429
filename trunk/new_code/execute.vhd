@@ -17,6 +17,7 @@ entity execute is
 	controlSignal	: in std_logic_vector(27 downto 0);
 	rs       : in std_logic_vector(31 downto 0);
 	rt       : in std_logic_vector(31 downto 0);
+	finish 	 : in std_logic;
 	
 	-- Outputs
 	output_exec			: out std_logic_vector(31 downto 0);
@@ -142,7 +143,8 @@ begin
     end process;
         
  
-    pcOut_temp <= rs when output_select_ctl = "000"  -- jr
+    pcOut_temp <= pc when finish = '1'
+    		else rs when output_select_ctl = "000"  -- jr
     		else output1 when ( branch_taken_out = '1' AND output_select_ctl = "101" )-- branch insn
     		else jump_out when ( output_select_ctl = "110") -- for jump
     		else jump_out when ( output_select_ctl = "111") -- for JAL

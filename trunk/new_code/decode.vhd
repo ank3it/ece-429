@@ -122,6 +122,11 @@ begin
 			if funct = "000000" then		-- sll
 				if rd = "00000" and rt = "00000" and shamt = "00000" then -- nop
 					write( my_line, string'("NOP ") );
+					controlSignal(4) <= '0'; -- Set shift direction
+					controlSignal(5) <= '0'; -- Set shift sign
+					controlSignal(16 downto 12) <= shamt;  -- Set shift amount
+					controlSignal(19 downto 17) <= "010";  -- Set output selector
+					controlSignal(25 downto 21) <= rd;	-- Set destination register
 				else
 					write( my_line, string'("SLL ") );
 					write( my_line, to_integer(unsigned(rd)));
