@@ -594,7 +594,7 @@ begin
 				controlSignal(19 downto 17) <= "001";  -- Set output selector
 				controlSignal(27) <= '1';	-- Disable writeback stage
 		end if;
-		writeline(output, my_line);	
+		--writeline(output, my_line);	
 	end process;
 	
 	--rf_ra1_out <= rf_ra1;
