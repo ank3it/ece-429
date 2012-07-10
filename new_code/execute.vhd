@@ -14,14 +14,17 @@ entity execute is
 	pc				 : in std_logic_vector(31 downto 0);
 	insn			  : in std_logic_vector(31 downto 0);
 	stall			 : in std_logic;
-	controlSignal	: in std_logic_vector(19 downto 0);
+	controlSignal	: in std_logic_vector(27 downto 0);
 	rs       : in std_logic_vector(31 downto 0);
 	rt       : in std_logic_vector(31 downto 0);
 	--destreg  : in std_logic_vector( 4 downto 0);
 	
 	-- Outputs
 	output_exec			: out std_logic_vector(31 downto 0);
-	output_branch_taken   : out std_logic
+	output_branch_taken	: out std_logic;
+	controlSignalOut	: out std_logic_vector(7 downto 0);
+	stallOut			: out std_logic;
+	rtOut				: out std_logic_vector(31 downto 0)
 	);
 end execute;
 
@@ -75,7 +78,6 @@ architecture main of execute is
     signal bt_BLTZ : std_logic;
     signal bt_BNE : std_logic;
 
-    
     signal branch_taken_out : std_logic;
     signal branch_addr_out : std_logic_vector( 31 downto 0);
     signal slt_out : std_logic_vector( 31 downto 0);
@@ -95,6 +97,9 @@ begin
 	  	pcOut <= pc;
 	  	output_exec <= output1;
 	  	output_branch_taken <= branch_taken_out;
+		controlSignalOut <= controlSignal(27 downto 20);
+		stallOut <= stall;
+		rtOut <= rt;
 	 end process;
 	 
     process(pc) 
