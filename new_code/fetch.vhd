@@ -50,16 +50,17 @@ architecture main of fetch is
                   stall <= '0';
                   pc_fetch <= addr_fetch;
                   wait until rising_edge(clk);
-                  stall <= '1';
-                  wait until rising_edge(clk);
-                  wait until rising_edge(clk);
-                  wait until rising_edge(clk);
-                  wait until rising_edge(clk);
+              --    stall <= '1';
+              --    wait until rising_edge(clk);
+              --    wait until rising_edge(clk);
+              --    wait until rising_edge(clk);
+              --    wait until rising_edge(clk);
                 --  if stall = '0' then
                 --  end if;
                   addr_fetch <= pcIn;
                   if ( finish2 = '1' ) then
                    counter := 0;
+                   stall <= '1';
                   end if; 
               end loop;
               wait;

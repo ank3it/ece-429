@@ -40,7 +40,8 @@ architecture main of tb is
 		signal stall_fromMem			: std_logic;
 		signal execDataOut_fromMem		: std_logic_vector(31 downto 0);
 		signal rt_fromExec				: std_logic_vector(31 downto 0);
-		signal pcFromFetch				: std_logic_vector(31 downto 0);
+		signal pcFromExec				: std_logic_vector(31 downto 0);
+		signal pcFromSelecter			: std_logic_vector(31 downto 0);
 		signal stall_fromDecode			: std_logic;
 		
 		-- Signals for register file
@@ -79,7 +80,7 @@ architecture main of tb is
 			insnDecode => data_FromFetch,
 			rw => writeReady_fetch,
 			pc => pc,
-			pcIn => pcFromFetch,
+			pcIn => pcFromSelecter,
 			finish => finish,
 			stall => stall
 		);
@@ -128,13 +129,24 @@ architecture main of tb is
 			rf_data1 => rf_data_out1,
 			rf_data2 => rf_data_out2
 		);
+		
+	pcS : entity work.pcselect(main)
+ 		port map (
+ 			pcInFromExec => pcFromExec,
+ 			branchTaken =>  output_branch_taken,
+ 			currPc => pc,
+ 			clk => clock2,	
+ 			reset => reset,
+ 			stall => stall,
+ 			pcOut => pcFromSelecter
+ 			);
 	
 	execute : entity work.execute(main)
 		port map (
 			clk => clock2,
 			insn => insnOut,
 			pc => pcOut,
-			pcOut => pcFromFetch,
+			pcOut => pcFromExec,
 			stall => stall_fromDecode,
 			controlSignal		=> controlSignal,
 			finish => finish,
@@ -176,6 +188,9 @@ architecture main of tb is
 			o_write_address => rf_write_address,
 			o_data => rf_data_in
 		);
+		
+
+ 					
      
     ----------------------------------------------------
 
