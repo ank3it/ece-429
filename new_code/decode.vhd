@@ -23,6 +23,7 @@ entity decode is
 		pcOut		: out std_logic_vector(31 downto 0);
 		controlSignal2 : out std_logic_vector(27 downto 0);
 		stall_out   : out std_logic;
+		stall_fetch  : out std_logic;
 		
 		-- Reg file signals
 		rf_ra1_out		: out std_logic_vector(4 downto 0);
@@ -37,39 +38,114 @@ architecture main of decode is
 	 signal rsOut: std_logic_vector(31 downto 0);
 	 signal rtOut: std_logic_vector(31 downto 0);
 	 signal oldDestReg: std_logic_vector(4 downto 0);
+	 signal oldDestReg1: std_logic_vector(4 downto 0);
+	 signal oldDestReg2: std_logic_vector(4 downto 0);
+	 signal DestReg: std_logic_vector(4 downto 0);
+	 signal count_stalls : std_logic;
+	 signal rf_ra1_out2 : std_logic_vector(4 downto 0);
+	 signal rf_ra2_out2 : std_logic_vector(4 downto 0);
+	 signal countNumIns : integer;
+	 signal stall_fetch2 : std_logic;
 begin
 	-- Break up instruction into parts
-	
+	controlSignal2 <= controlSignal;
 	rf_ra1_out <= insn(20 downto 16);
 	rf_ra2_out <= insn(25 downto 21);
+	rf_ra1_out2 <= insn(20 downto 16);
+	rf_ra2_out2 <= insn(25 downto 21);
 	rsOut <= pc when insn(31 downto 26) = "000011" else rf_data2;
 	rtOut <= "00000000000000000000000000010000" when insn(31 downto 26) = "000011" else rf_data1;
+	--DestReg <= controlSignal( 25 downto 21);
+	oldDestReg <= "00000" when (reset = '1' OR count_stalls = '0') else controlSignal( 25 downto 21);
+	stall_fetch <= stall_fetch2;
+	stall_fetch2 <= '1' when (((rf_ra1_out2 = oldDestReg) OR (rf_ra2_out2 = oldDestReg) ) AND count_stalls /= '0' AND oldDestReg /= "00000" )
+		else '1'  when (((rf_ra1_out2 = oldDestReg1) OR (rf_ra2_out2 = oldDestReg1) ) AND count_stalls /= '0' AND oldDestReg1 /= "00000")
+		else '1'  when (((rf_ra1_out2 = oldDestReg2) OR (rf_ra2_out2 = oldDestReg2) ) AND count_stalls /= '0' AND oldDestReg2 /= "00000")
+		else '0';
 	
 	process
 	  begin
 	 wait until rising_edge(clk);
+	 if reset = '1' then
+	  countNumIns <= 4;
+	  stall_out <= '1';
+	 else 
+	 count_stalls <= '1';
+	 if (  countNumIns /= 0 ) then
+	 	countNumIns <= countNumIns - 1;
+	 	stall_out <= '0';
+	 end if;
 	 if ( stall = '0' ) then
-	  	insnOut <= insn;
+	 	stall_out <= '0';
+	 	if ( oldDestReg /= "00000")  then 
+	  	if ( ((rf_ra1_out2 = oldDestReg) OR (rf_ra2_out2 = oldDestReg))  AND countNumIns < 3) then
+	  		wait until rising_edge(clk);
+	  		 if (  countNumIns /= 0 ) then
+	 			countNumIns <= countNumIns - 1;
+	 		end if;
+	  		stall_out <= '1';
+	  		--wait until rising_edge(clk);
+	  		--wait until rising_edge(clk);
+	  		--count_stalls <= '0';
+	  		--stall_fetch <= '0';
+	  	end if;	
+	  	end if;
+	  	
+	  	if ( oldDestReg1 /= "00000")  then 
+		if ( ((rf_ra1_out2 = oldDestReg1) OR (rf_ra2_out2 = oldDestReg1))  AND countNumIns < 2) then
+	  		--stall_fetch <= '1';
+	  		wait until rising_edge(clk);
+	  		if (  countNumIns /= 0 ) then
+	 			countNumIns <= countNumIns - 1;
+	 		end if;
+	  		stall_out <= '1';
+	  		--wait until rising_edge(clk);
+	  		--count_stalls <= '0';
+	  		--stall_fetch <= '0';
+	  	end if;
+	  	end if;
+	  	
+	  	if ( oldDestReg2 /= "00000")  then 
+	  	if ( ((rf_ra1_out2 = oldDestReg2) OR (rf_ra2_out2 = oldDestReg2))  AND countNumIns < 1) then
+	  		--stall_fetch <= '1';
+	  		--count_stalls <= '0';
+	  		count_stalls <= '0';
+	  		wait until rising_edge(clk);
+	  		count_stalls <= '1';
+	  		--stall_out <= '1';
+	  		--stall_fetch <= '0';
+	  	end if;
+	  	end if;		  	
+	    insnOut <= insn;
 	  	pcOut <= pc;
-	  	controlSignal2 <= controlSignal;
 	  	rsOut2 <= rsOut;
 	  	rtOut2 <= rtOut;
-	  end if;	
-	  	  	stall_out <= stall;
+	  	stall_out <= '0';
+	  		
+	  else
+	  	stall_out <= '1';	
+	  end if;
+	 end if; 	
 	 end process;
 	 
 	 process
 	 	begin
 	  wait until rising_edge(clk);
 	  if ( reset = '1' ) then
-	  	oldDestReg <= "00000";
-	  else
-	  	oldDestReg <= controlSignal( 25 downto 21);
+	  	--oldDestReg <= "00000";
+	  	oldDestReg1 <= "00000";
+	  	oldDestReg2 <= "00000";
+	  elsif ( count_stalls = '0') then
+	  	oldDestReg1 <= "00000";
+	  	oldDestReg2 <= "00000";
+	  else 
+	  	oldDestReg1 <= oldDestReg;
+	  	oldDestReg2 <= oldDestReg1;
 	  end if;
 	  end process;	 	
 	
 	-- Select correct instruction parts
-	process(pc) 
+	process(pc, count_stalls) 
 	    variable my_line : line;  -- type 'line' comes from textio
       	variable rd_line : string(1 to 5);
 	    variable rs_line : string(1 to 5);

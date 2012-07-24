@@ -109,7 +109,7 @@ begin
 	 end if;	
 	 end process;
 	 
-	 process(pcPrint) 
+	 process(pcPrint , output1) 
         variable my_line : line;  -- type 'line' comes from textio
       begin
       
