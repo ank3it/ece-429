@@ -84,8 +84,7 @@ RW:process
             end if;
         end if;
   end process;
-address <= address2 when (to_integer(signed(address2)) >= 0 AND to_integer(unsigned(address2)) < 8001)
-			else x"00001F40"; -- 8000 in dec
+address <= address2; -- 8000 in dec
 address2 <= std_logic_vector(unsigned(unsigned(Actualaddress) - MemStart)) when reset = '1' else Actualaddress ;
 
 end main;

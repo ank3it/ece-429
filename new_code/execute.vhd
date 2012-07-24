@@ -18,6 +18,7 @@ entity execute is
 	rs       : in std_logic_vector(31 downto 0);
 	rt       : in std_logic_vector(31 downto 0);
 	finish 	 : in std_logic;
+	reset 	: in std_logic;
 	
 	-- Outputs
 	output_exec			: out std_logic_vector(31 downto 0);
@@ -217,7 +218,8 @@ begin
      bt_BNE <= '0' when (rs = rt ) else '1';
      
      branch_addr_out <= std_logic_vector(unsigned(pcplus4)+ unsigned(signed(sign_extended) sll 2));   
-     branch_taken_out <= bt_BEQ when  (branch_ctl = "100" AND output_select_ctl = "101")
+     branch_taken_out <= '0' when reset = '1'
+     			  else bt_BEQ when  (branch_ctl = "100" AND output_select_ctl = "101")
                   else   bt_BGEZ when (branch_ctl = "101" AND output_select_ctl = "101")
                   else   bt_BGTZ when (branch_ctl = "111" AND output_select_ctl = "101")
                   else   bt_BLEZ when (branch_ctl = "110" AND output_select_ctl = "101")

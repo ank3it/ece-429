@@ -151,6 +151,7 @@ architecture main of tb is
 	execute : entity work.execute(main)
 		port map (
 			clk => clock2,
+			reset => reset,
 			insn => insnOut,
 			pc => pcOut,
 			pcOut => pcFromExec,
