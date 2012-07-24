@@ -116,6 +116,7 @@ architecture main of tb is
 			insn => data_FromFetch,
 			pc => pc,
 			stall => stall,
+			reset => reset,
 			rsOut2 => rsOut,
 			rtOut2 => rtOut,
 			insnOut		=> insnOut,
@@ -134,7 +135,7 @@ architecture main of tb is
  		port map (
  			pcInFromExec => pcFromExec,
  			branchTaken =>  output_branch_taken,
- 			currPc => pc,
+ 			--currPc => pc,
  			clk => clock2,	
  			reset => reset,
  			stall => stall,
