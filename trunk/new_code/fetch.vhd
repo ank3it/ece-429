@@ -96,7 +96,7 @@ architecture main of fetch is
      	wait until rising_edge(clk);
      	pc <= pcIn;
      end process;
-      insnDecode <= insn; --when flush = '0' else x"00000000";  -- Set to NOP when flush is set 
+      insnDecode <= insn when ( flush = '0' or pcIn = x"80020004") else x"00000000" ;  -- Set to NOP when flush is set 
       address <= pcIn;-- when flush = '0' else x"00000000"; 
       --pc_fetch <= std_logic_vector(unsigned(addr_fetch)-4);
       rw <= '0';  -- '0' means read

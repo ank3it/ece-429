@@ -70,6 +70,7 @@ begin
 	 if reset = '1' then
 	  countNumIns <= 4;
 	  stall_out <= '1';
+	  insnOut <= x"00000000";
 	 else 
 	 count_stalls <= '1';
 	 if (  countNumIns /= 0 ) then
@@ -110,6 +111,7 @@ begin
 	  	if ( ((rf_ra1_out2 = oldDestReg2) OR (rf_ra2_out2 = oldDestReg2))  AND countNumIns < 1) then
 	  		--stall_fetch <= '1';
 	  		--count_stalls <= '0';
+	  		stall_out <= '1';
 	  		count_stalls <= '0';
 	  		wait until rising_edge(clk);
 	  		count_stalls <= '1';
