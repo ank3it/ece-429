@@ -43,6 +43,8 @@ architecture main of tb is
 		signal pcFromExec				: std_logic_vector(31 downto 0);
 		signal pcFromSelecter			: std_logic_vector(31 downto 0);
 		signal stall_fromDecode			: std_logic;
+		signal stall_fetchFromDecode	: std_logic;
+		signal stall_toPCs	: std_logic;
 		
 		-- Signals for register file
 		signal rf_read_address1		: std_logic_vector(4 downto 0);
@@ -116,6 +118,7 @@ architecture main of tb is
 			insn => data_FromFetch,
 			pc => pc,
 			stall => stall,
+			stall_fetch => stall_fetchFromDecode,
 			reset => reset,
 			rsOut2 => rsOut,
 			rtOut2 => rtOut,
@@ -138,7 +141,7 @@ architecture main of tb is
  			--currPc => pc,
  			clk => clock2,	
  			reset => reset,
- 			stall => stall,
+ 			stall => stall_toPCs,
  			pcOut => pcFromSelecter
  			);
 	
@@ -204,6 +207,7 @@ architecture main of tb is
      wait for period/2;
     end process;
     
+    stall_toPCs <= (stall OR stall_fetchFromDecode);
     data <= data_load;
     address <= addr_load when reset = '1' else addr_fetch when reset = '0';
     writeReady <= writeReady_load when reset = '1' else writeReady_fetch when reset = '0';
