@@ -14,6 +14,7 @@ entity decode is
 		insn		: in std_logic_vector(31 downto 0);
 		pc			: in std_logic_vector(31 downto 0);
 		stall		: in std_logic;
+		reset 		: in std_logic;
 		
 		-- Outputs
 		rsOut2		: out std_logic_vector(31 downto 0);
@@ -35,6 +36,7 @@ architecture main of decode is
 	 signal controlSignal: std_logic_vector(27 downto 0);
 	 signal rsOut: std_logic_vector(31 downto 0);
 	 signal rtOut: std_logic_vector(31 downto 0);
+	 signal oldDestReg: std_logic_vector(4 downto 0);
 begin
 	-- Break up instruction into parts
 	
@@ -55,6 +57,16 @@ begin
 	  end if;	
 	  	  	stall_out <= stall;
 	 end process;
+	 
+	 process
+	 	begin
+	  wait until rising_edge(clk);
+	  if ( reset = '1' ) then
+	  	oldDestReg <= "00000";
+	  else
+	  	oldDestReg <= controlSignal( 25 downto 21);
+	  end if;
+	  end process;	 	
 	
 	-- Select correct instruction parts
 	process(pc) 
