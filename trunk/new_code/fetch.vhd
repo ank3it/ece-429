@@ -41,10 +41,11 @@ architecture main of fetch is
       begin
         wait until rising_edge(clk);
         if reset = '1' then
-        	stall <= '1';
+        	stall <= '0';
         end if;	
         if reset = '0' then
               addressword := x"80020000";
+              --stall <= '0';
               --wait until rising_edge(clk);
               --if stall = '0' then
                 addr_fetch <= pcIn;-- std_logic_vector(addressword);
@@ -52,7 +53,6 @@ architecture main of fetch is
                 wait until rising_edge(clk);
                 while (counter /= 0) loop
                   pc_fetch <= addr_fetch;
-                  stall <= '0';
                   wait until rising_edge(clk);
                   
                --   stall <= '1';
@@ -90,11 +90,14 @@ architecture main of fetch is
 			finish <= finish2;		
 		      
           
-        
+     process
+     begin
+     	wait until rising_edge(clk);
+     	pc <= pcIn;
+     end process;
+      insnDecode <= insn;   
       address <= pcIn;--addr_fetch;
-      insnDecode <= insn;
       --pc_fetch <= std_logic_vector(unsigned(addr_fetch)-4);
-      pc <= pc_fetch;
       rw <= '0';  -- '0' means read
 end main;
 
