@@ -8,7 +8,7 @@ use IEEE.std_logic_textio.all;          -- I/O for logic types
 -- This file has both parsing and testBench code
 entity load is
 			generic(  
-                  filename        : string := "file.txt";
+                  filename        : string := "BubbleSort.srec";
                   line_length     : natural := 50
                   );
                   

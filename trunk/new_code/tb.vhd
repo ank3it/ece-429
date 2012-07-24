@@ -183,7 +183,8 @@ architecture main of tb is
 			MemExecInput => output_fromExec,
 			MemExecOutput => execDataOut_fromMem2, 
 			finish => finish,
-			execDataOut => execDataOut_fromMem
+			execDataOut => execDataOut_fromMem,
+			i_pc => pcFromExec
 		);
 		
 	wb : entity work.writeback(main)

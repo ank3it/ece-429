@@ -262,7 +262,7 @@ begin
 				write( my_line, to_integer(unsigned(rt)));
 				write( my_line, string'(", "));
 				hwrite( my_line, shamt ); 
-				writeline(output, my_line);
+				--writeline(output, my_line);
 				
 				rf_ra1 := rt;
 				--rtOut <= rf_data1;  -- Get value of rt from register file
@@ -342,7 +342,7 @@ begin
 				write( my_line, to_integer(unsigned(rs))); 
 				write( my_line, string'(", "));
 				write( my_line, to_integer(unsigned(rt))); 
-				writeline(output, my_line);
+				--writeline(output, my_line);
 				
 				rf_ra1 := rt;
 				rf_ra2 := rs;
@@ -686,7 +686,7 @@ begin
 				controlSignal(19 downto 17) <= "001";  -- Set output selector
 				controlSignal(27) <= '1';	-- Disable writeback stage
 		end if;
-		writeline(output, my_line);	
+		--writeline(output, my_line);	
 	end process;
 	
 	--rf_ra1_out <= rf_ra1;

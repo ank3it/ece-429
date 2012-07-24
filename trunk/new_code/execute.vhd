@@ -123,7 +123,7 @@ begin
                                 write( my_line, to_integer(signed(rs)));
                                 write( my_line, string'(" REG[rt] = "));
                                 write( my_line, to_integer(signed(rt)));                
-                                writeline(output, my_line);
+                                --writeline(output, my_line);
                                 
                                 -- Print execute output
                 write( my_line, string'("E:PC "));
@@ -136,7 +136,7 @@ begin
                 hwrite( my_line, output1);
                 write( my_line, string'(" BT: "));
                 write( my_line, (branch_taken_out));
-                writeline(output, my_line);      
+                --writeline(output, my_line);      
     end process;
 
 	 
