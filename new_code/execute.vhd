@@ -25,6 +25,7 @@ entity execute is
 	controlSignalOut	: out std_logic_vector(7 downto 0);
 	pcout 				: out std_logic_vector( 31 downto 0);
 	stallOut			: out std_logic;
+	flush				: out std_logic;
 	rtOut				: out std_logic_vector(31 downto 0)
 	);
 end execute;
@@ -225,5 +226,6 @@ begin
                   else   '1'    when ( output_select_ctl = "110" OR output_select_ctl = "111" or output_select_ctl = "000") -- for jump and JAL and JR
                   else   '0';
       
+      flush <= branch_taken_out;
                         
 end main;

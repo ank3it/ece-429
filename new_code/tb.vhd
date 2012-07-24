@@ -45,6 +45,7 @@ architecture main of tb is
 		signal stall_fromDecode			: std_logic;
 		signal stall_fetchFromDecode	: std_logic;
 		signal stall_toPCs	: std_logic;
+		signal flush_fromExec : std_logic;
 		
 		-- Signals for register file
 		signal rf_read_address1		: std_logic_vector(4 downto 0);
@@ -78,6 +79,7 @@ architecture main of tb is
 			clk => clock2,
 			reset => reset,
 			address => addr_fetch,
+			flush =>output_branch_taken,
 			insn => dataOut,
 			insnDecode => data_FromFetch,
 			rw => writeReady_fetch,
@@ -117,6 +119,7 @@ architecture main of tb is
 			clk => clock2,
 			insn => data_FromFetch,
 			pc => pc,
+			flush => output_branch_taken,
 			stall => stall,
 			stall_fetch => stall_fetchFromDecode,
 			reset => reset,
@@ -160,6 +163,7 @@ architecture main of tb is
 			output_branch_taken => output_branch_taken,
 			controlSignalOut => controlSignal_fromExec,
 			stallOut => stall_fromExec,
+			flush => flush_fromExec,
 			rtOut => rt_fromExec
 		);
 

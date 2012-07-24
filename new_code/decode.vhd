@@ -15,6 +15,7 @@ entity decode is
 		pc			: in std_logic_vector(31 downto 0);
 		stall		: in std_logic;
 		reset 		: in std_logic;
+		flush       : in std_logic;
 		
 		-- Outputs
 		rsOut2		: out std_logic_vector(31 downto 0);
@@ -48,7 +49,7 @@ architecture main of decode is
 	 signal stall_fetch2 : std_logic;
 begin
 	-- Break up instruction into parts
-	controlSignal2 <= controlSignal;
+	controlSignal2 <= controlSignal ;--when flush = '0' else "0000000001000000000000000000";
 	rf_ra1_out <= insn(20 downto 16);
 	rf_ra2_out <= insn(25 downto 21);
 	rf_ra1_out2 <= insn(20 downto 16);
@@ -116,10 +117,11 @@ begin
 	  		--stall_fetch <= '0';
 	  	end if;
 	  	end if;		  	
-	    insnOut <= insn;
-	  	pcOut <= pc;
-	  	rsOut2 <= rsOut;
-	  	rtOut2 <= rtOut;
+            insnOut <= insn;
+            pcOut <= pc;
+           -- controlSignal2 <= controlSignal;
+            rsOut2 <= rsOut;
+            rtOut2 <= rtOut;
 	  	stall_out <= '0';
 	  		
 	  else

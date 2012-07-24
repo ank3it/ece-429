@@ -47,8 +47,8 @@ begin
 		end if; 
 	end process; 
 	
-	pcOut_Temp <= currPc when (stall = '1' or reset = '1')
-			else pcInFromExec when branchTaken = '1' AND counter = 4
+	pcOut_Temp <= pcInFromExec when branchTaken = '1' AND counter = 4
+			else currPc when (stall = '1' or reset = '1')
 			else std_logic_vector(unsigned(currPc) + 4);
 end main;
 

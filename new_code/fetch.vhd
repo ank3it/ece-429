@@ -16,6 +16,7 @@ entity fetch is
                 pcIn : in std_logic_vector(31 downto 0);
                 clk : in std_logic;
                 reset : in std_logic;
+                flush       : in std_logic;
                 address  	: out std_logic_vector(31 downto 0);
                 insn      : in std_logic_vector(31 downto 0);
                 insnDecode: out std_logic_vector(31 downto 0);
@@ -95,8 +96,8 @@ architecture main of fetch is
      	wait until rising_edge(clk);
      	pc <= pcIn;
      end process;
-      insnDecode <= insn;   
-      address <= pcIn;--addr_fetch;
+      insnDecode <= insn; --when flush = '0' else x"00000000";  -- Set to NOP when flush is set 
+      address <= pcIn;-- when flush = '0' else x"00000000"; 
       --pc_fetch <= std_logic_vector(unsigned(addr_fetch)-4);
       rw <= '0';  -- '0' means read
 end main;
