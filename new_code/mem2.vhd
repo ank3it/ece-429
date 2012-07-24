@@ -28,7 +28,8 @@ entity memory2 is
 				MemExecInput	: in std_logic_vector(dataOut_width - 1 downto 0);
 				MemExecOutput	: out std_logic_vector(dataOut_width - 1 downto 0);
 				finish			: in std_logic;
-				execDataOut		: out std_logic_vector(dataOut_width -1 downto 0)
+				execDataOut		: out std_logic_vector(dataOut_width -1 downto 0);
+				i_pc			: in std_logic_vector(31 downto 0)
         );
 end memory2 ;
 
@@ -53,15 +54,15 @@ RW:process
 		execDataOut <= data;
 		MemExecOutput <= MemExecInput;
 		
-		if (finish = '1' AND finish2 = '1') then
+		if (finish = '1' AND finish2 = '1') OR i_pc = x"80020080" then
 				finish2 := '0';
 				writeline(output, my_line);
 				i := 1013;
 				while ( i < 1079 ) loop
 					print_cont := mem( i ) & mem( i + 1) & mem( i + 2) & mem( i + 3);
-					write( my_line, string'("$") );
+					write( my_line, string'("MEM[") );
 					write( my_line, i );
-					write( my_line, string'(" = ") );
+					write( my_line, string'("] = ") );
 					write( my_line , to_integer(signed(print_cont)));
 					writeline( output, my_line );
 					i := i+4;
